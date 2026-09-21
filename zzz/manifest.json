@@ -1,0 +1,32 @@
+{
+  "name": "Polychrome Calculator",
+  "short_name": "Polychrome",
+  "description": "Tính thời gian tích luỹ Polychrome và quy đổi ra lượt Signal Search (Zenless Zone Zero)",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "id": "./",
+  "background_color": "#0A0906",
+  "theme_color": "#15140D",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
