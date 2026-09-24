@@ -11,19 +11,13 @@
   "lang": "vi",
   "icons": [
     {
-      "src": "https://hw-media-cdn-mingchao.kurogame.com/object/1727366400000/51j386nmdwqqklitlk-1727447944852.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "https://hw-media-cdn-mingchao.kurogame.com/object/1727366400000/51j386nmdwqqklitlk-1727447944852.jpg",
+      "src": "character-icon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "https://hw-media-cdn-mingchao.kurogame.com/object/1727366400000/51j386nmdwqqklitlk-1727447944852.jpg",
+      "src": "character-icon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "maskable"

@@ -11,16 +11,16 @@
   "lang": "vi",
   "icons": [
     {
-      "src": "https://ntevmg.perfectworld.com/webops/nte/%E3%80%90EN%E3%80%91%E5%AE%89%E9%AD%82%E6%9B%B2.jpg",
-      "sizes": "192x192",
+      "src": "character-icon.jpg",
+      "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "https://ntevmg.perfectworld.com/webops/nte/%E3%80%90EN%E3%80%91%E5%AE%89%E9%AD%82%E6%9B%B2.jpg",
+      "src": "character-icon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ]
 }

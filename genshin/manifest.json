@@ -11,19 +11,13 @@
   "lang": "vi",
   "icons": [
     {
-      "src": "https://olimg.3dmgame.com/uploads/images/raiders/2023/0925/1695637053749.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "https://olimg.3dmgame.com/uploads/images/raiders/2023/0925/1695637053749.jpg",
+      "src": "character-icon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "https://olimg.3dmgame.com/uploads/images/raiders/2023/0925/1695637053749.jpg",
+      "src": "character-icon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "maskable"

@@ -11,21 +11,15 @@
   "lang": "vi",
   "icons": [
     {
-      "src": "https://upload-os-bbs.hoyolab.com/upload/2022/08/20/179440628/5e395d0d359c0b94aac5106f754aaf4a_7850149700447204170.jpg?x-oss-process=image%2Fresize%2Cs_1000%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp%2Fquality%2Cq_70",
-      "sizes": "192x192",
-      "type": "image/webp",
+      "src": "character-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "https://upload-os-bbs.hoyolab.com/upload/2022/08/20/179440628/5e395d0d359c0b94aac5106f754aaf4a_7850149700447204170.jpg?x-oss-process=image%2Fresize%2Cs_1000%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp%2Fquality%2Cq_70",
+      "src": "character-icon.jpg",
       "sizes": "512x512",
-      "type": "image/webp",
-      "purpose": "any"
-    },
-    {
-      "src": "https://upload-os-bbs.hoyolab.com/upload/2022/08/20/179440628/5e395d0d359c0b94aac5106f754aaf4a_7850149700447204170.jpg?x-oss-process=image%2Fresize%2Cs_1000%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp%2Fquality%2Cq_70",
-      "sizes": "512x512",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "purpose": "maskable"
     }
   ]
