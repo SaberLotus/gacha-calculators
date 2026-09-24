@@ -11,21 +11,21 @@
   "lang": "vi",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "https://fastcdn.hoyoverse.com/content-v2/nap/127429/7e956caa65504cfe71c54e542bd576e5_733802917417139973.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "https://fastcdn.hoyoverse.com/content-v2/nap/127429/7e956caa65504cfe71c54e542bd576e5_733802917417139973.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "icon-maskable.png",
+      "src": "https://fastcdn.hoyoverse.com/content-v2/nap/127429/7e956caa65504cfe71c54e542bd576e5_733802917417139973.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "maskable"
     }
   ]
