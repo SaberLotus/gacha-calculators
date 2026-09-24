@@ -1,5 +1,5 @@
 // Service worker — cache-first for the app shell so it runs offline.
-const CACHE = 'hi3-v3';
+const CACHE = 'hi3-v4';
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
