@@ -11,13 +11,13 @@
   "lang": "vi",
   "icons": [
     {
-      "src": "character-icon.jpg",
+      "src": "character-icon-v2.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "character-icon.jpg",
+      "src": "character-icon-v2.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "maskable"
