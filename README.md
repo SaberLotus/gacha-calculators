@@ -56,6 +56,14 @@ Chỉ muốn thử nhanh trên laptop, không cần internet: bấm đúp `run-l
 
 App có icon riêng trong Start Menu, mở ra cửa sổ riêng không thanh địa chỉ và chạy được khi mất mạng. Cài app nào chỉ cài app đó.
 
+## Cài bằng bộ cài Windows `.exe`
+
+Tải `GachaCalculators.exe` trong [GitHub Releases](https://github.com/SaberLotus/gacha-calculators/releases/latest), mở file và chọn game muốn cài. Bộ cài thêm shortcut riêng vào Start Menu cho từng game đã chọn; mỗi app giữ dữ liệu tách biệt. Bản Windows chạy offline vì đã kèm sẵn các tệp app.
+
+Yêu cầu Windows 10/11 64-bit và Microsoft Edge WebView2 Runtime (thường đã có trên máy cài Microsoft Edge). Để cập nhật, chạy bộ cài bản mới hơn; dữ liệu đã nhập được giữ nguyên. Có thể gỡ trong **Settings → Apps → Installed apps**; dữ liệu vẫn được giữ nếu sau này cài lại.
+
+Điện thoại vẫn dùng bản web/PWA ở bước 1; file `.exe` chỉ dành cho Windows.
+
 ## Bước 2 — Cài trên điện thoại
 
 **Android (Chrome):** mở link, bấm nút **Cài app** trong app, hoặc menu ⋮ → **Cài đặt ứng dụng** / **Thêm vào màn hình chính**.
