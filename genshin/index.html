@@ -983,6 +983,7 @@
           </div>
         </div>
         <p class="src-note">Mọi thay đổi bạn nhập được lưu tự động trong app này. Trên máy tính (Chrome/Edge), "Tự lưu vào file trên máy" ghi thẳng vào một file .json — đặt file đó trong OneDrive hoặc Google Drive là có luôn sao lưu. Để chuyển dữ liệu giữa laptop và điện thoại: bấm "Sao chép mã", gửi mã cho chính mình (Zalo, Ghi chú...), rồi bấm "Dán mã" trên máy kia.</p>
+        <p class="src-note">Mỗi phiên bản: 5 vé thường (Acquaint Fate) được theo dõi riêng, không cộng vào pity banner giới hạn; 5 vé banner giới hạn (Intertwined Fate) đã quy đổi thành 800 Nguyên Thạch trong nguồn bên dưới.</p>
         <div id="a-src-list"></div>
         <div class="src-summary" id="src-summary"></div>
     </div>
@@ -1158,6 +1159,7 @@
     { name: 'Trial of the Bastion (Phase 2)', amount: 420, period: 'once' },
     { name: 'Sự kiện web / mã quà tặng', amount: 0, period: 'custom', customDays: 10 },
     { name: 'Thành tựu (Kỳ tích)', amount: 0, period: 'once' },
+    { name: 'Vé banner giới hạn từ cửa hàng (5 Intertwined Fate)', amount: 800, period: 'version', shopKey: 'shop-limited-5' },
   ];
 
   const srcList = document.getElementById('a-src-list');
@@ -1167,6 +1169,7 @@
     const wrap = document.createElement('div');
     wrap.className = 'src-item';
     wrap.dataset.id = id;
+    wrap.dataset.shopKey = data.shopKey || '';
     wrap.innerHTML = `
       <div class="src-row">
         <label class="src-toggle" title="Bật/tắt nguồn này">
@@ -1315,6 +1318,7 @@
   function rowToData(wrap){
     return {
       name: wrap.querySelector('.src-name').value,
+      shopKey: wrap.dataset.shopKey || null,
       amount: wrap.querySelector('.src-amount').value,
       period: wrap.querySelector('.src-period').value,
       customDays: wrap.querySelector('.src-custom-days').value,
@@ -1370,7 +1374,10 @@
     if (state.crystals !== undefined) document.getElementById('a-crystals').value = state.crystals;
     if (state.gSingle !== undefined) document.getElementById('g-single').value = state.gSingle;
     if (state.gTen !== undefined) document.getElementById('g-ten').value = state.gTen;
-    (Array.isArray(state.sources) && state.sources.length ? state.sources : defaultSources).forEach(s => addSourceRow(s));
+    const savedSources = Array.isArray(state.sources) && state.sources.length ? [...state.sources] : [...defaultSources];
+    const savedShopKeys = new Set(savedSources.map(s => s.shopKey).filter(Boolean));
+    defaultSources.filter(s => s.shopKey && !savedShopKeys.has(s.shopKey)).forEach(s => savedSources.push({ ...s }));
+    savedSources.forEach(s => addSourceRow(s));
     if (state.goal !== undefined) document.getElementById('a-goal').value = state.goal;
     if (state.days !== undefined) document.getElementById('a-days').value = state.days;
     if (state.versionLen !== undefined) document.getElementById('a-version-len').value = state.versionLen;
