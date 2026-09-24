@@ -53,6 +53,11 @@
     z-index: 0;
   }
 
+  .app-switch{margin:0 0 16px;text-align:left;}
+  .app-switch a{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 13px;border:1px solid var(--line);border-radius:999px;color:var(--gold-soft);background:rgba(255,255,255,.035);font:600 14px/1.2 inherit;text-decoration:none;transition:background .18s,border-color .18s,transform .18s;}
+  .app-switch a:hover{background:rgba(255,255,255,.09);border-color:var(--gold);transform:translateX(-2px);}
+  .app-switch a:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
   .wrap{
     position: relative;
     z-index: 1;
@@ -917,6 +922,7 @@
   </svg>
 
   <div class="wrap">
+    <nav class="app-switch" aria-label="Điều hướng ứng dụng"><a href="../" aria-label="Quay lại danh sách game">← <span>Chọn game khác</span></a></nav>
     <header>
       <p class="eyebrow">Neverness to Everness</p>
       <h1>Annulith Calculator</h1>
