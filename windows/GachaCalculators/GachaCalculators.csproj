@@ -22,5 +22,6 @@
     <EmbeddedResource Include="..\..\hi3\index.html;..\..\hi3\manifest.json;..\..\hi3\sw.js;..\..\hi3\icon-*.png;..\..\hi3\favicon.ico" LogicalName="WebAssets/hi3/%(Filename)%(Extension)" />
     <EmbeddedResource Include="..\..\zzz\index.html;..\..\zzz\manifest.json;..\..\zzz\sw.js;..\..\zzz\icon-*.png;..\..\zzz\favicon.ico" LogicalName="WebAssets/zzz/%(Filename)%(Extension)" />
     <EmbeddedResource Include="..\..\wuwa\index.html;..\..\wuwa\manifest.json;..\..\wuwa\sw.js;..\..\wuwa\icon-*.png;..\..\wuwa\favicon.ico" LogicalName="WebAssets/wuwa/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\nte\index.html;..\..\nte\manifest.json;..\..\nte\sw.js;..\..\nte\icon.svg" LogicalName="WebAssets/nte/%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>
