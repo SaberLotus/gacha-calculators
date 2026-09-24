@@ -1,0 +1,20 @@
+{
+  "name": "Annulith Calculator — Neverness to Everness",
+  "short_name": "NTE Annulith",
+  "description": "Tính thời gian tích luỹ Annulith và quy đổi ra lượt Solid Dice (Neverness to Everness)",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "id": "./",
+  "background_color": "#080711",
+  "theme_color": "#100E1D",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
