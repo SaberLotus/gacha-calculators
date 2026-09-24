@@ -30,7 +30,9 @@ Quan trọng: app **phải chạy qua http/https**, không mở bằng cách b�
 
 Banner vũ khí có luật riêng: ZZZ 80 lượt với tỉ lệ 75/25, WuWa 80 lượt và không có 50/50, Genshin và HSR 80 lượt. Khi tính cho banner vũ khí, sửa ô "Lượt bảo hiểm tối đa" cho đúng.
 
-NTE dùng bảo đảm tối đa 90 lượt cho nhân vật nổi bật và không có 50/50. Calculator đặt nguồn thu mặc định bằng 0 để bạn tự nhập theo phần thưởng trong game; không mô phỏng phần thưởng từng ô, Arc hay trang phục.
+NTE dùng bảo đảm tối đa 90 lượt cho nhân vật nổi bật và không có 50/50. Calculator đặt nguồn Annulith mặc định bằng 0 để bạn tự nhập theo phần thưởng trong game; không mô phỏng phần thưởng từng ô, Arc hay trang phục. NTE còn có bộ tính Fons độc lập: nhập số dư, mục tiêu và mức kiếm theo ngày/tuần/phiên bản.
+
+Ở Genshin, HSR, ZZZ, WuWa và NTE, nguồn vé cửa hàng mỗi phiên bản tính 5 vé banner giới hạn (quy đổi 800 đơn vị tiền quay ở giá 160/vé). 5 vé thường được ghi chú tách riêng, không tính vào pity banner giới hạn. HI3 không áp dụng mục này.
 
 Danh sách nguồn thu mặc định chỉ là điểm khởi đầu theo mức F2P thông thường. Sự kiện và phần thưởng thay đổi mỗi phiên bản, nên hãy sửa lại theo tài khoản của bạn — app sẽ nhớ.
 
