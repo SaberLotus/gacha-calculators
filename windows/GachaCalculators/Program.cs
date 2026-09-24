@@ -17,7 +17,8 @@ internal static class Program
         new("hsr", "Honkai: Star Rail — Tinh Ngọc Calculator"),
         new("hi3", "Honkai Impact 3rd — Pha Lê Calculator"),
         new("zzz", "Zenless Zone Zero — Polychrome Calculator"),
-        new("wuwa", "Wuthering Waves — Astrite Calculator")
+        new("wuwa", "Wuthering Waves — Astrite Calculator"),
+        new("nte", "Neverness to Everness — Annulith Calculator")
     ];
 
     [STAThread]
@@ -217,6 +218,7 @@ internal sealed class InstallerForm : Form
                     continue;
                 }
                 var icon = Path.Combine(Program.WebDirectory, game.Id, "favicon.ico");
+                if (!File.Exists(icon)) icon = Program.InstalledExe;
                 Program.CreateShortcut(shortcut, game.Id, icon);
             }
             Program.RegisterUninstaller();
