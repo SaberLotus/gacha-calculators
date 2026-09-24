@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#100E1D">
+<meta name="description" content="Tính thời gian tích luỹ Annulith và quy đổi ra lượt Solid Dice (Neverness to Everness)">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NTE">
+<title>Annulith Calculator — Neverness to Everness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #100E1D;
+    --bg-deep: #080711;
+    --surface: #19162B;
+    --surface-2: #25213D;
+    --line: #3D345E;
+    --gold: #C4A9FF;
+    --gold-soft: #E7D9FF;
+    --green: #7EE2D1;
+    --text: #F4F0DF;
+    --text-muted: #A99DBF;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background: radial-gradient(ellipse 120% 80% at 50% -10%, #2B2716 0%, var(--bg) 45%, var(--bg-deep) 100%);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+  }
+
+  .stage{
+    position: relative;
+    min-height: 100vh;
+    padding: 40px 18px 60px;
+    overflow-x: hidden;
+  }
+
+  .facets{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  header{
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .eyebrow{
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    color: var(--green);
+    margin: 0 0 4px;
+  }
+
+  h1{
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 38px;
+    letter-spacing: 0.01em;
+    margin: 0;
+    line-height: 1.05;
+    background: linear-gradient(135deg, var(--gold-soft), var(--gold) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .sub{
+    color: var(--text-muted);
+    font-size: 14.5px;
+    margin: 10px auto 0;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 20px;
+    margin-bottom: 16px;
+  }
+
+  .card h2{
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--gold-soft);
+    margin: 0 0 16px;
+    letter-spacing: 0.01em;
+  }
+
+  .field{
+    margin-bottom: 14px;
+  }
+
+  .field:last-child{ margin-bottom: 0; }
+
+  .field label{
+    display: block;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .field input{
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    padding: 10px 13px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .field input:focus{
+    border-color: var(--gold);
+  }
+
+  .field input[type="date"]{
+    color-scheme: dark;
+  }
+
+  .row2{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .mode-toggle{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .mode-chip{
+    flex: 1;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    padding: 9px 6px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .mode-chip.active{
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(143, 217, 168, 0.08);
+  }
+
+  .result{
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: 0 0 40px -14px rgba(242, 200, 121, 0.45);
+  }
+
+  .result .label{
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .result .big{
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .result .big span.unit{
+    font-size: 20px;
+    color: var(--gold-soft);
+    margin-left: 6px;
+  }
+
+  .result .big.small{
+    font-size: 34px;
+    color: var(--green);
+  }
+
+  .now-pulls{
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font-size: 13.5px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .now-pulls b{
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+  }
+
+  .result .detail{
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+
+  .result .detail b{
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .divider{
+    height: 1px;
+    background: var(--line);
+    margin: 16px 0;
+  }
+
+  .src-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .src-head-btns{
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .add-src{
+    background: rgba(143, 217, 168, 0.12);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .reset-src{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .reset-src:hover{
+    border-color: #FF8C8C;
+    color: #FF8C8C;
+  }
+
+  .io-src{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .io-src:hover{
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .src-summary{
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .src-summary b{
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .src-note{
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 14px;
+  }
+
+  .src-row{
+    display: grid;
+    grid-template-columns: 32px 1fr 70px 98px 22px 22px;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .src-item{
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--line);
+    transition: opacity 0.2s ease;
+  }
+
+  .src-item.src-item-zero{
+    opacity: 0.55;
+  }
+
+  .src-item.src-item-disabled{
+    opacity: 0.4;
+  }
+
+  .src-item.src-item-disabled .src-name{
+    text-decoration: line-through;
+  }
+
+  .src-toggle{
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 18px;
+    cursor: pointer;
+  }
+
+  .src-toggle input{
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider{
+    position: absolute;
+    inset: 0;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .toggle-slider::before{
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    left: 2px;
+    top: 2px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .src-toggle input:checked + .toggle-slider{
+    background: rgba(143, 217, 168, 0.15);
+    border-color: var(--green);
+  }
+
+  .src-toggle input:checked + .toggle-slider::before{
+    transform: translateX(14px);
+    background: var(--green);
+  }
+
+  .src-item:last-child{
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .src-item .src-row{
+    margin-bottom: 0;
+  }
+
+  .src-custom-cycle{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+  }
+
+  .src-custom-cycle.wrap-row{
+    flex-wrap: wrap;
+  }
+
+  .src-custom-cycle label{
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .src-custom-cycle input[type="number"]{
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 6px;
+    text-align: center;
+    width: 52px;
+  }
+
+  .src-custom-cycle input[type="date"]{
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12.5px;
+    padding: 6px 8px;
+    flex: 1;
+    min-width: 0;
+    color-scheme: dark;
+  }
+
+  .src-weekday-field{
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .src-weekday-field label{
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .wd-chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .wd-chip{
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .wd-chip.active{
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(143, 217, 168, 0.1);
+  }
+
+  .src-row input[type="text"]{
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 10px;
+    outline: none;
+    width: 100%;
+  }
+
+  .src-row input[type="number"]{
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 9px 8px;
+    outline: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  .src-row select{
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--green);
+    font-family: 'Manrope', sans-serif;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 8px 4px;
+    outline: none;
+    width: 100%;
+  }
+
+  .src-row input:focus, .src-row select:focus{
+    border-color: var(--gold);
+  }
+
+  .del-src{
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .del-src:hover{ color: #FF8C8C; }
+
+  .dup-src{
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .dup-src:hover{ color: var(--green); }
+
+  .src-expire-field{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .expire-toggle-label{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+
+  .expire-toggle-label input[type="checkbox"]{
+    accent-color: var(--green);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+
+  .src-expire-days{
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 4px 6px;
+    text-align: center;
+    width: 48px;
+  }
+
+  .expire-suffix{
+    color: var(--text-muted);
+  }
+
+  .src-total{
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-muted);
+    padding-top: 8px;
+    margin-top: 4px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .src-total b{
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+  }
+
+  .hint{
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 18px;
+    line-height: 1.6;
+  }
+
+  /* ===== v2 additions ===== */
+  :root{
+    --accent: var(--green);
+    --num-font: 'Rajdhani', sans-serif;
+  }
+
+  .src-next-field input[type="number"]{ width: 58px; }
+  .src-next-hint{
+    flex: 1 1 100%;
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+
+  .goal-chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .goal-chip{
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: var(--num-font);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .goal-chip:hover{ border-color: var(--accent); color: var(--accent); }
+
+  .pity-box{
+    margin-top: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0 14px;
+  }
+  .pity-box summary{
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .pity-box summary::-webkit-details-marker{ display: none; }
+  .pity-box summary::after{ content: "+"; font-size: 17px; line-height: 1; }
+  .pity-box[open] summary::after{ content: "\2013"; }
+  .pity-body{ padding: 2px 0 14px; }
+  .pity-body .row2{ margin-bottom: 12px; }
+  .pity-box select{
+    width: 100%;
+    min-height: 46px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 10px;
+    outline: none;
+  }
+  .pity-box select:focus{ border-color: var(--gold); }
+  .pity-out{
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin: 4px 0 12px;
+  }
+  .pity-out b{
+    color: var(--gold);
+    font-family: var(--num-font);
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .pity-box .add-src:disabled{ opacity: 0.4; cursor: not-allowed; }
+
+  .copy-row{ margin-top: 16px; text-align: center; }
+
+  .an-meta{
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .an-meta b{
+    color: var(--gold);
+    font-family: var(--num-font);
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .chart-svg{ width: 100%; height: auto; display: block; margin-bottom: 16px; }
+  .ch-axis{ stroke: var(--line); stroke-width: 1; }
+  .ch-grid{ stroke: var(--line); stroke-width: 0.6; stroke-dasharray: 2 3; }
+  .ch-area{ fill: var(--accent); opacity: 0.13; }
+  .ch-line{ fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-goal{ stroke: var(--gold); stroke-width: 1.2; stroke-dasharray: 5 4; }
+  .ch-pity{ stroke: var(--text-muted); opacity: 0.5; stroke-width: 0.8; stroke-dasharray: 1 3; }
+  .ch-txt{ fill: var(--text-muted); font-size: 10px; font-family: 'Manrope', sans-serif; }
+  .ch-txt.gold{ fill: var(--gold); }
+
+  .an-sub{ font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+  .bd-row{ margin-bottom: 11px; }
+  .bd-row:last-child{ margin-bottom: 0; }
+  .bd-top{ display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 5px; font-size: 13px; }
+  .bd-name{ min-width: 0; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bd-val{ color: var(--gold); font-family: var(--num-font); font-weight: 700; font-size: 15px; white-space: nowrap; }
+  .bd-val i{ margin-left: 5px; font-family: 'Manrope', sans-serif; font-style: normal; font-weight: 500; font-size: 11.5px; color: var(--text-muted); }
+  .bd-bar{ height: 6px; border-radius: 6px; background: var(--bg-deep); overflow: hidden; }
+  .bd-bar span{ display: block; height: 100%; border-radius: 6px; background: var(--accent); opacity: 0.85; }
+  .bd-row.own .bd-bar span{ background: var(--gold); }
+/* ===== mobile ===== */
+  html{ -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  button, select, label.src-toggle, .mode-chip, .wd-chip, .goal-chip{
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* let date pickers wrap onto their own line instead of collapsing to an icon */
+  .src-custom-cycle input[type="date"]{ min-width: 132px; }
+  .chart-svg{ overflow: visible; }
+  .pity-body .field{ margin-bottom: 0; }
+  .pity-body .row2{ align-items: end; }
+  .ch-txt{ font-size: 11px; }
+
+  @media (max-width: 520px){
+    .stage{ padding: 28px 12px 48px; }
+    .card{ padding: 18px 14px; }
+    header{ margin-bottom: 22px; }
+
+    /* source row: name on its own line, controls below */
+    .src-row{
+      grid-template-columns: 36px minmax(0, 1fr) minmax(0, 2.1fr) 44px 44px;
+      grid-template-areas:
+        "tog name name name name"
+        "amt amt per dup del";
+      gap: 8px 6px;
+    }
+    .src-row .src-toggle{ grid-area: tog; justify-self: center; }
+    .src-row .src-name{ grid-area: name; }
+    .src-row .src-amount{ grid-area: amt; }
+    .src-row .src-period{ grid-area: per; }
+    .src-row .dup-src{ grid-area: dup; }
+    .src-row .del-src{ grid-area: del; }
+    .src-row .dup-src, .src-row .del-src{
+      width: 44px; height: 44px; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .src-row .src-period{ padding-left: 8px; padding-right: 2px; }
+    .pity-body .row2{ align-items: end; }
+  }
+
+  /* touch devices: 16px+ controls (no iOS focus-zoom) and comfortable tap targets */
+  @media (pointer: coarse){
+    .src-item input:not([type="checkbox"]),
+    .src-item select,
+    .pity-box select,
+    .pity-body input{ font-size: 16px; }
+    .src-custom-cycle input[type="number"]{ width: 60px; }
+    .wd-chip, .mode-chip, .goal-chip, .add-src, .reset-src, .io-src,
+    .dup-src, .del-src{ min-height: 44px; }
+    .src-item input:not([type="checkbox"]), .src-item select,
+    .pity-box select, .pity-body input{ min-height: 44px; }
+    .src-item input[type="checkbox"]{ width: 24px; height: 24px; }
+  }
+
+  /* ===== PWA additions ===== */
+  .fs-row{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+  .fs-status{
+    flex: 1 1 140px;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  .fs-status b{ color: var(--accent); font-weight: 600; }
+  .fs-status.warn b{ color: #FFB27A; }
+
+  .sw-toast{
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100vw - 28px);
+    background: var(--surface-2);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8);
+  }
+  .sw-toast button{
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  /* notch / home-indicator safe areas (env() is 0 where there is none) */
+  .stage{
+    padding-top: calc(40px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+  @media (max-width: 520px){
+    .stage{
+      padding-top: calc(28px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+      padding-left: max(12px, env(safe-area-inset-left, 0px));
+      padding-right: max(12px, env(safe-area-inset-right, 0px));
+    }
+  }
+  .sw-toast{ bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+
+  .xfer-msg{ font-size: 12px; line-height: 1.5; color: var(--accent); margin: -6px 0 14px; }
+  .xfer-msg:empty{ display: none; }
+  .xfer-msg.warn{ color: #FFB27A; }
+  .xfer-panel{
+    margin: 0 0 14px;
+    padding: 12px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .xfer-panel label{ display: block; font-size: 12px; line-height: 1.5; color: var(--text-muted); margin-bottom: 8px; }
+  .xfer-panel textarea{
+    width: 100%;
+    min-height: 78px;
+    resize: vertical;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--text);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 16px;
+    padding: 9px 10px;
+    outline: none;
+    word-break: break-all;
+  }
+  .xfer-panel textarea:focus{ border-color: var(--gold); }
+  .xfer-actions{ display: flex; gap: 8px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <svg class="facets" viewBox="0 0 460 800" preserveAspectRatio="xMidYMin slice">
+    <polygon points="40,25 30,55 55,75 80,50 65,25" fill="none" stroke="#F2C879" stroke-width="1"/>
+    <polygon points="390,70 380,100 405,120 430,95 415,70" fill="none" stroke="#8FD9A8" stroke-width="1"/>
+    <polygon points="55,75 30,55 5,90 25,120 50,105" fill="none" stroke="#F2C879" stroke-width="0.6"/>
+    <polygon points="405,120 430,95 460,130 440,165 415,150" fill="none" stroke="#F2C879" stroke-width="0.6"/>
+    <polygon points="210,705 200,735 225,755 250,730 235,705" fill="none" stroke="#8FD9A8" stroke-width="1"/>
+    <polygon points="30,610 20,635 40,655 60,635 50,610" fill="none" stroke="#F2C879" stroke-width="0.6"/>
+  </svg>
+
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Neverness to Everness</p>
+      <h1>Annulith Calculator</h1>
+      <p class="sub">Theo dõi Annulith và số Solid Dice cần cho mục tiêu nhân vật Fair Board. Banner nhân vật giới hạn bảo đảm nhân vật nổi bật trong tối đa 90 lượt, không có 50/50.</p>
+    </header>
+
+    <div class="card">
+      <h2>Số Annulith hiện có</h2>
+      <p class="src-note">Mặc định 1 Solid Dice = 160 Annulith; bạn có thể sửa giá và số lượt bảo hiểm nếu luật banner thay đổi. Bộ tính này không mô phỏng phần thưởng bàn, Arc hay vật phẩm trang phục. Tham khảo <a href="https://www.prydwen.gg/neverness-to-everness/guides/gacha-system" target="_blank" rel="noopener">tổng quan hệ thống gacha NTE</a>.</p>
+      <div class="field">
+        <label for="a-crystals">Trong túi đồ</label>
+        <input type="number" id="a-crystals" inputmode="numeric" placeholder="VD: 800" value="800">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Giá Solid Dice</h2>
+      <div class="row2">
+        <div class="field">
+          <label for="g-single">Giá 1 lượt (1 Solid Dice)</label>
+          <input type="number" id="g-single" inputmode="numeric" value="160">
+        </div>
+        <div class="field">
+          <label for="g-ten">Giá 10 lượt</label>
+          <input type="number" id="g-ten" inputmode="numeric" value="1600">
+        </div>
+      </div>
+      <div class="now-pulls" id="now-pulls"></div>
+    </div>
+
+    <div class="card">
+        <div class="src-head">
+          <h2 style="margin:0;">Nguồn Annulith định kỳ</h2>
+          <div class="src-head-btns">
+            <button class="add-src" id="a-add-src" type="button">+ Thêm nguồn</button>
+            <button class="reset-src" id="a-reset-src" type="button">Đặt lại mặc định</button>
+            <button class="io-src" id="a-export" type="button">Xuất file</button>
+            <button class="io-src" id="a-import" type="button">Nhập file</button>
+            <input type="file" id="a-import-file" accept="application/json" style="display:none;">
+          </div>
+        </div>
+        <div class="fs-row" id="pwa-row" style="display:none;">
+          <button class="io-src" id="pwa-install" type="button" style="display:none;">Cài app</button>
+          <span class="fs-status" id="pwa-hint"></span>
+          <button class="io-src" id="pwa-hide" type="button">Ẩn</button>
+        </div>
+        <div class="fs-row" id="fs-row" style="display:none;">
+          <button class="io-src" id="fs-link" type="button">Tự lưu vào file trên máy</button>
+          <button class="io-src" id="fs-unlink" type="button" style="display:none;">Ngắt</button>
+          <span class="fs-status" id="fs-status"></span>
+        </div>
+        <div class="fs-row" id="xfer-row">
+          <button class="io-src" id="xfer-copy" type="button">Sao chép mã</button>
+          <button class="io-src" id="xfer-paste" type="button">Dán mã</button>
+          <button class="io-src" id="xfer-share" type="button" style="display:none;">Chia sẻ file</button>
+        </div>
+        <div class="xfer-msg" id="xfer-msg"></div>
+        <div class="xfer-panel" id="xfer-panel" style="display:none;">
+          <label for="xfer-input">Dán mã dữ liệu vào đây (mã tạo bằng nút "Sao chép mã" trên thiết bị khác)</label>
+          <textarea id="xfer-input" rows="3" placeholder="GC1:..." spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+          <div class="xfer-actions">
+            <button class="add-src" id="xfer-apply" type="button">Áp dụng</button>
+            <button class="io-src" id="xfer-cancel" type="button">Huỷ</button>
+          </div>
+        </div>
+        <p class="src-note">Mọi thay đổi bạn nhập được lưu tự động trong app này. Trên máy tính (Chrome/Edge), "Tự lưu vào file trên máy" ghi thẳng vào một file .json — đặt file đó trong OneDrive hoặc Google Drive là có luôn sao lưu. Để chuyển dữ liệu giữa laptop và điện thoại: bấm "Sao chép mã", gửi mã cho chính mình (Zalo, Ghi chú...), rồi bấm "Dán mã" trên máy kia.</p>
+        <div id="a-src-list"></div>
+        <div class="src-summary" id="src-summary"></div>
+    </div>
+
+    <div class="card">
+        <h2>Bạn muốn biết điều gì?</h2>
+        <div class="mode-toggle">
+          <div class="mode-chip active" data-mode="days">Cần bao nhiêu ngày</div>
+          <div class="mode-chip" data-mode="future">Sau N ngày</div>
+          <div class="mode-chip" data-mode="range">Từ ngày → ngày</div>
+        </div>
+
+        <div class="field" id="a-goal-field">
+          <label for="a-goal">Mục tiêu Annulith cần đạt</label>
+          <input type="number" id="a-goal" inputmode="numeric" placeholder="VD: 1600" value="1600">
+          <div class="goal-chips" id="goal-chips"></div>
+          <details class="pity-box" id="pity-box">
+            <summary>Tính mục tiêu theo bảo hiểm (pity)</summary>
+            <div class="pity-body">
+              <div class="row2">
+                <div class="field">
+                  <label for="p-current">Pity hiện tại (lượt)</label>
+                  <input type="number" id="p-current" inputmode="numeric" min="0" value="0">
+                </div>
+                <div class="field">
+                  <label for="p-hard">Lượt bảo hiểm tối đa</label>
+                  <input type="number" id="p-hard" inputmode="numeric" min="1" value="90" placeholder="">
+                </div>
+              </div>
+              <div class="row2">
+                <div class="field">
+                  <label for="p-count">Số Agent S-Rank muốn có</label>
+                  <input type="number" id="p-count" inputmode="numeric" min="1" value="1">
+                </div>
+                <div class="field">
+                  <label for="p-guaranteed">Lần S-Rank trước</label>
+                  <select id="p-guaranteed">
+                    <option value="0">Thắng 50/50 (lần tới vẫn 50/50)</option>
+                    <option value="1">Thua 50/50 (lần tới được đảm bảo)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="pity-out" id="pity-out"></div>
+              <button class="add-src" id="p-apply" type="button">Đặt làm mục tiêu</button>
+            </div>
+          </details>
+
+        </div>
+
+        <div class="field" id="a-days-field" style="display:none;">
+          <label for="a-days">Số ngày muốn tính</label>
+          <input type="number" id="a-days" inputmode="numeric" placeholder="VD: 14" value="14">
+        </div>
+
+        <div class="row2" id="a-range-field" style="display:none;">
+          <div class="field">
+            <label for="a-date-from">Từ ngày</label>
+            <input type="date" id="a-date-from">
+          </div>
+          <div class="field">
+            <label for="a-date-to">Đến ngày</label>
+            <input type="date" id="a-date-to">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label for="a-version-len">Độ dài 1 phiên bản (ngày)</label>
+          <input type="number" id="a-version-len" inputmode="numeric" value="42">
+        </div>
+    </div>
+
+    <div class="result">
+        <p class="label" id="a-label">Bạn sẽ đủ mục tiêu sau</p>
+        <div class="big" id="a-result">0<span class="unit">ngày</span></div>
+        <div class="detail" id="a-detail"></div>
+        <div class="divider"></div>
+        <p class="label">Quy đổi ra lượt Solid Dice</p>
+        <div class="big small" id="a-pulls">0<span class="unit">lượt</span></div>
+        <div class="detail" id="a-pulls-detail"></div>
+        <div class="copy-row"><button class="io-src" id="a-copy" type="button">Sao chép kết quả</button></div>
+    </div>
+
+    <div class="card" id="analysis-card" style="display:none; margin-top:16px;">
+      <h2>Phân tích chi tiết</h2>
+      <div class="an-meta" id="an-meta"></div>
+      <div id="an-chart"></div>
+      <div class="an-sub">Đóng góp theo nguồn</div>
+      <div id="an-bars"></div>
+    </div>
+
+    <p class="hint">Chỉ cần điền tên nguồn và số Annulith — không cần chọn ngày, trừ khi chọn "Tính theo ngày" (nhận 1 lần đúng ngày đó) hoặc "Tuỳ chỉnh" (chu kỳ khác ngày/tuần/tháng). Nguồn "Mỗi tuần" có thể chọn thêm đúng thứ reset, "Theo phiên bản" dùng chung độ dài phiên bản ở trên. Số liệu mặc định chỉ mang tính minh hoạ — hãy chỉnh theo phiên bản game bạn đang chơi. Với nguồn theo chu kỳ, điền "Lần nhận tiếp theo sau … ngày" để tính đúng thời điểm nhận đầu tiên.</p>
+  </div>
+</div>
+
+<script>
+
+  function fmt(n){
+    return Math.max(0, Math.round(n)).toLocaleString('vi-VN');
+  }
+
+  function esc(v){
+    return String(v === null || v === undefined ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  const escAttr = esc;
+
+  function nextFieldVisible(period, weekdays){
+    if (period === 'monthly' || period === 'version' || period === 'custom') return true;
+    if (period === 'weekly') return !(weekdays && weekdays.length > 0);
+    return false;
+  }
+
+  function parseNext(v){
+    const t = String(v === null || v === undefined ? '' : v).trim();
+    if (t === '') return null;
+    const n = parseFloat(t);
+    return isNaN(n) ? null : Math.max(0, n);
+  }
+
+  // Number of payouts in [0, endDay) for a cycle source.
+  // nextDays === null keeps the original behaviour (first payout after one full cycle).
+  function cycleOccurrences(endDay, cycle, nextDays, shift){
+    if (!(cycle > 0) || endDay <= 0) return 0;
+    if (nextDays === null || nextDays === undefined || isNaN(nextDays)) return Math.floor(endDay / cycle);
+    let k = nextDays - shift;
+    if (k < 0) k += Math.ceil(-k / cycle) * cycle;
+    if (k >= endDay) return 0;
+    return Math.floor((endDay - 1 - k) / cycle) + 1;
+  }
+
+
+  // ---- WISH PULL CONVERSION (shared) ----
+  function pullsFromCrystals(crystals){
+    const single = parseFloat(document.getElementById('g-single').value) || 160;
+    const ten = parseFloat(document.getElementById('g-ten').value) || (single * 10);
+
+    const tenPacks = Math.floor(crystals / ten);
+    const remainAfterTen = crystals - (tenPacks * ten);
+    const extraSingles = Math.floor(remainAfterTen / single);
+    const totalPulls = tenPacks * 10 + extraSingles;
+    const leftover = crystals - (tenPacks * ten) - (extraSingles * single);
+    return { tenPacks, extraSingles, totalPulls, leftover, single };
+  }
+
+  function renderNowPulls(){
+    const crystals = parseFloat(document.getElementById('a-crystals').value) || 0;
+    const r = pullsFromCrystals(crystals);
+    document.getElementById('now-pulls').innerHTML =
+      `Với <b>${fmt(crystals)}</b> Annulith hiện có, bạn quay được <b>${fmt(r.totalPulls)}</b> lượt (dư <b>${fmt(r.leftover)}</b>).`;
+  }
+
+  document.getElementById('g-single').addEventListener('input', () => { renderNowPulls(); calcAccum(); });
+  document.getElementById('g-ten').addEventListener('input', () => { renderNowPulls(); calcAccum(); });
+
+  // ---- ACCUMULATION CALC (itemized sources) ----
+  let accumMode = 'days';
+  let srcId = 0;
+
+  const defaultSources = [
+    { name: 'Nhiệm vụ hàng ngày', amount: 0, period: 'daily' },
+    { name: 'Thưởng đăng nhập', amount: 0, period: 'monthly' },
+    { name: 'Hoạt động hàng tuần', amount: 0, period: 'weekly' },
+    { name: 'Sự kiện trong phiên bản', amount: 0, period: 'version' },
+    { name: 'Nhiệm vụ cốt truyện và phụ', amount: 0, period: 'once' },
+    { name: 'Khám phá và thành tựu', amount: 0, period: 'once' },
+    { name: 'Mã quà tặng', amount: 0, period: 'once' },
+  ];
+
+  const srcList = document.getElementById('a-src-list');
+
+  function addSourceRow(data, insertAfterNode){
+    const id = 'src-' + (srcId++);
+    const wrap = document.createElement('div');
+    wrap.className = 'src-item';
+    wrap.dataset.id = id;
+    wrap.innerHTML = `
+      <div class="src-row">
+        <label class="src-toggle" title="Bật/tắt nguồn này">
+          <input type="checkbox" class="src-enabled" ${data.enabled === false ? '' : 'checked'}>
+          <span class="toggle-slider"></span>
+        </label>
+        <input type="text" class="src-name" placeholder="Tên nguồn" value="${escAttr(data.name)}">
+        <input type="number" class="src-amount" inputmode="numeric" placeholder="0" value="${escAttr(data.amount || '')}">
+        <select class="src-period">
+          <option value="daily" ${data.period === 'daily' ? 'selected' : ''}>Mỗi ngày</option>
+          <option value="weekly" ${data.period === 'weekly' ? 'selected' : ''}>Mỗi tuần</option>
+          <option value="monthly" ${data.period === 'monthly' ? 'selected' : ''}>Mỗi tháng</option>
+          <option value="version" ${data.period === 'version' ? 'selected' : ''}>Theo phiên bản</option>
+          <option value="date" ${data.period === 'date' ? 'selected' : ''}>Tính theo ngày</option>
+          <option value="once" ${data.period === 'once' ? 'selected' : ''}>Tính 1 lần</option>
+          <option value="custom" ${data.period === 'custom' ? 'selected' : ''}>Tuỳ chỉnh</option>
+        </select>
+        <button class="dup-src" type="button" title="Sao chép nguồn">⧉</button>
+        <button class="del-src" type="button" title="Xoá nguồn">×</button>
+      </div>
+      <div class="src-weekday-field" style="display:${data.period === 'weekly' ? 'flex' : 'none'};">
+        <label>Reset vào (chọn nhiều được)</label>
+        <div class="wd-chips">
+          <button type="button" class="wd-chip" data-day="1">T2</button>
+          <button type="button" class="wd-chip" data-day="2">T3</button>
+          <button type="button" class="wd-chip" data-day="3">T4</button>
+          <button type="button" class="wd-chip" data-day="4">T5</button>
+          <button type="button" class="wd-chip" data-day="5">T6</button>
+          <button type="button" class="wd-chip" data-day="6">T7</button>
+          <button type="button" class="wd-chip" data-day="0">CN</button>
+        </div>
+      </div>
+      <div class="src-custom-cycle" style="display:${data.period === 'custom' ? 'flex' : 'none'};">
+        <label>Cứ mỗi</label>
+        <input type="number" class="src-custom-days" inputmode="numeric" min="1" value="${escAttr(data.customDays || 10)}">
+        <label>ngày</label>
+      </div>
+      <div class="src-custom-cycle src-onedate-field wrap-row" style="display:${data.period === 'date' ? 'flex' : 'none'};">
+        <label>Cứ mỗi</label>
+        <input type="number" class="src-date-interval" inputmode="numeric" min="1" value="${escAttr(data.dateInterval || 1)}">
+        <label>ngày, từ</label>
+        <input type="date" class="src-date-from" value="${escAttr(data.dateFrom || '')}">
+        <label>đến</label>
+        <input type="date" class="src-date-to" value="${escAttr(data.dateTo || '')}">
+      </div>
+      <div class="src-custom-cycle src-once-field wrap-row" style="display:${data.period === 'once' ? 'flex' : 'none'};">
+        <label>Nhận vào ngày (để trống = tính luôn 1 lần)</label>
+        <input type="date" class="src-once-date" value="${escAttr(data.onceDate || '')}">
+      </div>
+      <div class="src-custom-cycle src-next-field wrap-row" style="display:${nextFieldVisible(data.period, data.weekdays) ? 'flex' : 'none'};">
+        <label>Lần nhận tiếp theo sau</label>
+        <input type="number" class="src-next-days" inputmode="numeric" min="0" placeholder="—" value="${escAttr(data.nextDays ?? '')}">
+        <label>ngày</label>
+        <span class="src-next-hint">0 = hôm nay. Bỏ trống = tính sau đủ 1 chu kỳ kể từ hôm nay.</span>
+      </div>
+      <div class="src-expire-field" style="display:${(data.period === 'date' || data.period === 'once') ? 'none' : 'flex'};">
+        <label class="expire-toggle-label">
+          <input type="checkbox" class="src-expire-toggle" ${data.expireDays ? 'checked' : ''}>
+          Giới hạn: chỉ chạy trong
+        </label>
+        <input type="number" class="src-expire-days" inputmode="numeric" min="1" value="${escAttr(data.expireDays || 30)}" style="display:${data.expireDays ? 'inline-block' : 'none'};">
+        <label class="expire-suffix" style="display:${data.expireDays ? 'inline' : 'none'};">ngày kể từ hôm nay</label>
+      </div>
+    `;
+    if (insertAfterNode && insertAfterNode.parentNode === srcList){
+      insertAfterNode.after(wrap);
+    } else {
+      srcList.appendChild(wrap);
+    }
+
+    const periodSelect = wrap.querySelector('.src-period');
+    const cycleField = wrap.querySelector('.src-custom-cycle:not(.src-onedate-field):not(.src-once-field):not(.src-next-field)');
+    const weekdayField = wrap.querySelector('.src-weekday-field');
+    const oneDateField = wrap.querySelector('.src-onedate-field');
+    const onceField = wrap.querySelector('.src-once-field');
+    const expireField = wrap.querySelector('.src-expire-field');
+    const expireToggle = wrap.querySelector('.src-expire-toggle');
+    const expireDaysInput = wrap.querySelector('.src-expire-days');
+    const expireSuffix = wrap.querySelector('.expire-suffix');
+    const amountInput = wrap.querySelector('.src-amount');
+    const enabledToggle = wrap.querySelector('.src-enabled');
+    const nextField = wrap.querySelector('.src-next-field');
+    function refreshNextField(){
+      const wds = wrap.querySelectorAll('.wd-chip.active');
+      nextField.style.display = nextFieldVisible(periodSelect.value, wds) ? 'flex' : 'none';
+    }
+
+    function refreshZeroState(){
+      wrap.classList.toggle('src-item-zero', !(parseFloat(amountInput.value) > 0));
+    }
+    function refreshEnabledState(){
+      wrap.classList.toggle('src-item-disabled', !enabledToggle.checked);
+    }
+    refreshZeroState();
+    refreshEnabledState();
+    amountInput.addEventListener('input', refreshZeroState);
+    enabledToggle.addEventListener('change', () => { refreshEnabledState(); calcAccum(); });
+
+    const initialDays = Array.isArray(data.weekdays) ? data.weekdays.map(String) : [];
+    wrap.querySelectorAll('.wd-chip').forEach(chip => {
+      if (initialDays.includes(chip.dataset.day)) chip.classList.add('active');
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('active');
+        refreshNextField();
+        calcAccum();
+      });
+    });
+
+    periodSelect.addEventListener('change', () => {
+      cycleField.style.display = periodSelect.value === 'custom' ? 'flex' : 'none';
+      weekdayField.style.display = periodSelect.value === 'weekly' ? 'flex' : 'none';
+      oneDateField.style.display = periodSelect.value === 'date' ? 'flex' : 'none';
+      onceField.style.display = periodSelect.value === 'once' ? 'flex' : 'none';
+      expireField.style.display = (periodSelect.value === 'date' || periodSelect.value === 'once') ? 'none' : 'flex';
+      refreshNextField();
+      calcAccum();
+    });
+
+    expireToggle.addEventListener('change', () => {
+      const on = expireToggle.checked;
+      expireDaysInput.style.display = on ? 'inline-block' : 'none';
+      expireSuffix.style.display = on ? 'inline' : 'none';
+      calcAccum();
+    });
+
+    wrap.querySelector('.del-src').addEventListener('click', () => { wrap.remove(); calcAccum(); });
+    wrap.querySelector('.dup-src').addEventListener('click', () => {
+      addSourceRow(rowToData(wrap), wrap);
+      calcAccum();
+    });
+    wrap.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calcAccum));
+  }
+
+  document.getElementById('a-add-src').addEventListener('click', () => {
+    addSourceRow({ name: '', amount: '', period: 'daily' });
+  });
+
+  document.getElementById('a-reset-src').addEventListener('click', () => {
+    srcList.innerHTML = '';
+    defaultSources.forEach(addSourceRow);
+    calcAccum();
+  });
+
+  const STORAGE_KEY = 'annulithCalcState_v1';
+
+  function rowToData(wrap){
+    return {
+      name: wrap.querySelector('.src-name').value,
+      amount: wrap.querySelector('.src-amount').value,
+      period: wrap.querySelector('.src-period').value,
+      customDays: wrap.querySelector('.src-custom-days').value,
+      weekdays: Array.from(wrap.querySelectorAll('.wd-chip.active')).map(c => parseInt(c.dataset.day, 10)),
+      dateInterval: wrap.querySelector('.src-date-interval').value,
+      dateFrom: wrap.querySelector('.src-date-from').value,
+      dateTo: wrap.querySelector('.src-date-to').value,
+      onceDate: wrap.querySelector('.src-once-date').value,
+      nextDays: wrap.querySelector('.src-next-days').value,
+      expireDays: wrap.querySelector('.src-expire-toggle').checked ? (parseFloat(wrap.querySelector('.src-expire-days').value) || 30) : null,
+      enabled: wrap.querySelector('.src-enabled').checked
+    };
+  }
+
+  function readSourcesRaw(){
+    return Array.from(srcList.querySelectorAll('.src-item')).map(rowToData);
+  }
+
+  function buildStateObject(){
+    return {
+      crystals: document.getElementById('a-crystals').value,
+      gSingle: document.getElementById('g-single').value,
+      gTen: document.getElementById('g-ten').value,
+      sources: readSourcesRaw(),
+      mode: accumMode,
+      goal: document.getElementById('a-goal').value,
+      days: document.getElementById('a-days').value,
+      dateFrom: document.getElementById('a-date-from').value,
+      dateTo: document.getElementById('a-date-to').value,
+      versionLen: document.getElementById('a-version-len').value,
+      pityCurrent: elv('p-current'),
+      pityHard: elv('p-hard'),
+      pityCount: elv('p-count'),
+      pityGuaranteed: elv('p-guaranteed')
+    };
+  }
+
+  function saveState(){
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(buildStateObject()));
+    } catch (e){ /* localStorage unavailable — silently skip persistence */ }
+  }
+
+  function loadState(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e){ return null; }
+  }
+
+  function applyState(state){
+    srcList.innerHTML = '';
+    if (state.crystals !== undefined) document.getElementById('a-crystals').value = state.crystals;
+    if (state.gSingle !== undefined) document.getElementById('g-single').value = state.gSingle;
+    if (state.gTen !== undefined) document.getElementById('g-ten').value = state.gTen;
+    (Array.isArray(state.sources) && state.sources.length ? state.sources : defaultSources).forEach(s => addSourceRow(s));
+    if (state.goal !== undefined) document.getElementById('a-goal').value = state.goal;
+    if (state.days !== undefined) document.getElementById('a-days').value = state.days;
+    if (state.versionLen !== undefined) document.getElementById('a-version-len').value = state.versionLen;
+    setv('p-current', state.pityCurrent);
+    setv('p-hard', state.pityHard);
+    setv('p-count', state.pityCount);
+    setv('p-guaranteed', state.pityGuaranteed);
+    if (state.dateFrom) document.getElementById('a-date-from').value = state.dateFrom;
+    if (state.dateTo) document.getElementById('a-date-to').value = state.dateTo;
+    if (state.mode){
+      accumMode = state.mode;
+      document.querySelectorAll('.mode-chip').forEach(c => c.classList.toggle('active', c.dataset.mode === state.mode));
+      document.getElementById('a-goal-field').style.display = accumMode === 'days' ? 'block' : 'none';
+      document.getElementById('a-days-field').style.display = accumMode === 'future' ? 'block' : 'none';
+      document.getElementById('a-range-field').style.display = accumMode === 'range' ? 'grid' : 'none';
+    }
+    renderNowPulls();
+    calcAccum();
+  }
+
+  document.getElementById('a-export').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(buildStateObject(), null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'annulith-calculator-data.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('a-import-file').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const state = JSON.parse(reader.result);
+        if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('invalid');
+        applyState(state);
+        saveState();
+      } catch (err){
+        alert('File không hợp lệ, không đọc được dữ liệu.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('a-import').addEventListener('click', () => {
+    document.getElementById('a-import-file').click();
+  });
+
+  const savedState = loadState();
+
+  function readSources(){
+    return Array.from(srcList.querySelectorAll('.src-item')).map(wrap => ({
+      name: wrap.querySelector('.src-name').value.trim() || 'Nguồn khác',
+      amount: parseFloat(wrap.querySelector('.src-amount').value) || 0,
+      period: wrap.querySelector('.src-period').value,
+      customDays: parseFloat(wrap.querySelector('.src-custom-days').value) || 10,
+      weekdays: Array.from(wrap.querySelectorAll('.wd-chip.active')).map(c => parseInt(c.dataset.day, 10)),
+      dateInterval: parseFloat(wrap.querySelector('.src-date-interval').value) || 1,
+      dateFrom: wrap.querySelector('.src-date-from').value || null,
+      dateTo: wrap.querySelector('.src-date-to').value || null,
+      onceDate: wrap.querySelector('.src-once-date').value || null,
+      nextDays: parseNext(wrap.querySelector('.src-next-days').value),
+      expireDays: wrap.querySelector('.src-expire-toggle').checked ? (parseFloat(wrap.querySelector('.src-expire-days').value) || 30) : null,
+      enabled: wrap.querySelector('.src-enabled').checked
+    })).filter(s => s.amount > 0 && s.enabled);
+  }
+
+  document.querySelectorAll('.mode-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      accumMode = chip.dataset.mode;
+      document.getElementById('a-goal-field').style.display = accumMode === 'days' ? 'block' : 'none';
+      document.getElementById('a-days-field').style.display = accumMode === 'future' ? 'block' : 'none';
+      document.getElementById('a-range-field').style.display = accumMode === 'range' ? 'grid' : 'none';
+      calcAccum();
+    });
+  });
+
+  function weekdayCount(startDay, endDay, targetWeekday, refWeekday){
+    if (endDay <= startDay) return 0;
+    const offset = (((targetWeekday - refWeekday) % 7) + 7) % 7;
+    const d0 = startDay + (((offset - startDay) % 7) + 7) % 7;
+    if (d0 >= endDay) return 0;
+    return Math.floor((endDay - 1 - d0) / 7) + 1;
+  }
+
+  function accumAfterDays(start, sources, days, reference){
+    let total = start;
+    const versionLen = parseFloat(document.getElementById('a-version-len').value) || 42;
+    const refWeekday = reference.getDay();
+    const shift = Math.round((reference - todayNoTime()) / 86400000);
+    sources.forEach(s => {
+      const startDay = 0;
+      let endDay = days;
+      if (s.expireDays){
+        const realToday = todayNoTime();
+        const cutoff = Math.round((realToday - reference) / 86400000) + s.expireDays;
+        endDay = Math.min(endDay, Math.max(0, cutoff));
+      }
+      const active = Math.max(0, endDay - startDay);
+      if (s.period === 'daily') total += s.amount * active;
+      else if (s.period === 'weekly'){
+        if (Array.isArray(s.weekdays) && s.weekdays.length > 0){
+          const occurrences = s.weekdays.reduce((sum, wd) => sum + weekdayCount(startDay, endDay, wd, refWeekday), 0);
+          total += s.amount * occurrences;
+        } else {
+          total += s.amount * cycleOccurrences(endDay, 7, s.nextDays, shift);
+        }
+      }
+      else if (s.period === 'monthly') total += s.amount * cycleOccurrences(endDay, 30, s.nextDays, shift);
+      else if (s.period === 'version') total += s.amount * cycleOccurrences(endDay, versionLen, s.nextDays, shift);
+      else if (s.period === 'date'){
+        if (s.dateFrom && s.dateTo){
+          const fromD = new Date(s.dateFrom + 'T00:00:00');
+          const toD = new Date(s.dateTo + 'T00:00:00');
+          const base = Math.round((fromD - reference) / 86400000);
+          const endBase = Math.round((toD - reference) / 86400000);
+          const interval = s.dateInterval > 0 ? s.dateInterval : 1;
+          const lo = Math.max(0, base);
+          const hi = Math.min(days, endBase + 1);
+          if (lo < hi){
+            const k0 = Math.max(0, Math.ceil((lo - base) / interval));
+            const d0 = base + k0 * interval;
+            if (d0 < hi){
+              const occ = Math.floor((hi - 1 - d0) / interval) + 1;
+              total += s.amount * occ;
+            }
+          }
+        }
+      }
+      else if (s.period === 'once'){
+        if (s.onceDate){
+          const od = new Date(s.onceDate + 'T00:00:00');
+          const offset = Math.round((od - reference) / 86400000);
+          if (offset >= 0 && offset < days) total += s.amount;
+        } else {
+          total += s.amount;
+        }
+      }
+      else total += s.amount * cycleOccurrences(endDay, s.customDays || 10, s.nextDays, shift);
+    });
+    return total;
+  }
+
+  function dailyRate(sources){
+    const versionLen = parseFloat(document.getElementById('a-version-len').value) || 42;
+    return sources.reduce((sum, s) => {
+      if (s.period === 'daily') return sum + s.amount;
+      if (s.period === 'weekly'){
+        const occursPerWeek = (Array.isArray(s.weekdays) && s.weekdays.length > 0) ? s.weekdays.length : 1;
+        return sum + (s.amount * occursPerWeek) / 7;
+      }
+      if (s.period === 'monthly') return sum + s.amount / 30;
+      if (s.period === 'version') return sum + s.amount / versionLen;
+      if (s.period === 'date') return sum;
+      if (s.period === 'once') return sum;
+      return sum + s.amount / (s.customDays || 10);
+    }, 0);
+  }
+
+  function renderSrcSummary(sources){
+    const el = document.getElementById('src-summary');
+    if (!el) return;
+    if (sources.length === 0){
+      el.innerHTML = 'Chưa có nguồn nào đang tính (số Annulith đang là 0).';
+      return;
+    }
+    const rate = dailyRate(sources);
+    el.innerHTML = `Trung bình từ <b>${sources.length}</b> nguồn đang tính: <b>${fmt(rate)}</b> Annulith/ngày, khoảng <b>${fmt(rate * 7)}</b>/tuần.`;
+  }
+
+  function todayNoTime(){
+    const n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  }
+
+  const weekdayNames = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+
+  function periodLabel(s){
+    if (s.period === 'daily') return 'mỗi ngày';
+    if (s.period === 'weekly') return (Array.isArray(s.weekdays) && s.weekdays.length > 0) ? `mỗi ${s.weekdays.map(wd => weekdayNames[wd]).join(', ')}` : 'mỗi tuần';
+    if (s.period === 'monthly') return 'mỗi tháng';
+    if (s.period === 'version') return 'mỗi phiên bản';
+    if (s.period === 'date') return (s.dateFrom && s.dateTo) ? `mỗi ${fmt(s.dateInterval || 1)} ngày, từ ${s.dateFrom.split('-').reverse().join('/')} đến ${s.dateTo.split('-').reverse().join('/')}` : 'theo khoảng ngày tuỳ chọn';
+    if (s.period === 'once') return s.onceDate ? `1 lần vào ${s.onceDate.split('-').reverse().join('/')}` : '1 lần';
+    return `mỗi ${fmt(s.customDays || 10)} ngày`;
+  }
+
+  function versionLine(days){
+    const vlen = parseFloat(document.getElementById('a-version-len').value) || 42;
+    const versions = days / vlen;
+    return `Tương đương khoảng <b>${versions.toFixed(1)}</b> phiên bản (mỗi bản ${fmt(vlen)} ngày).`;
+  }
+
+  function renderPullsResult(total){
+    const r = pullsFromCrystals(total);
+    document.getElementById('a-pulls').innerHTML = fmt(r.totalPulls) + '<span class="unit">lượt</span>';
+    let detail = `Từ <b>${fmt(total)}</b> Annulith: <b>${fmt(r.tenPacks)}</b> gói 10 lượt`;
+    if (r.extraSingles > 0) detail += ` + <b>${fmt(r.extraSingles)}</b> lượt đơn`;
+    detail += `, dư <b>${fmt(r.leftover)}</b> Annulith.`;
+    document.getElementById('a-pulls-detail').innerHTML = detail;
+  }
+
+  let analysisCtx = null;
+
+  function calcAccum(){
+    analysisCtx = null;
+    try { calcAccumCore(); } finally { renderAnalysis(); renderPity(); }
+  }
+
+  function calcAccumCore(){
+    saveState();
+    const start = parseFloat(document.getElementById('a-crystals').value) || 0;
+    const sources = readSources();
+    renderSrcSummary(sources);
+
+    if (accumMode === 'days'){
+      const goal = parseFloat(document.getElementById('a-goal').value) || 0;
+      const reference = todayNoTime();
+      document.getElementById('a-label').textContent = 'Bạn sẽ đủ mục tiêu sau';
+
+      if (start >= goal){
+        document.getElementById('a-result').innerHTML = '0<span class="unit">ngày</span>';
+        document.getElementById('a-detail').innerHTML = 'Bạn đã có đủ Annulith cho mục tiêu này rồi.';
+        renderPullsResult(start);
+        return;
+      }
+      if (sources.length === 0){
+        document.getElementById('a-result').innerHTML = '—';
+        document.getElementById('a-detail').innerHTML = 'Nhập số Annulith cho ít nhất một nguồn để tính.';
+        renderPullsResult(start);
+        return;
+      }
+
+      let d = 0;
+      let total = start;
+      const cap = 3650;
+      while (total < goal && d < cap){
+        d++;
+        total = accumAfterDays(start, sources, d, reference);
+      }
+      if (total < goal){
+        document.getElementById('a-result').innerHTML = '—';
+        document.getElementById('a-detail').innerHTML =
+          `Với các nguồn đang bật, bạn chưa thể đạt <b>${fmt(goal)}</b> Annulith (kể cả sau 10 năm). Hãy bật thêm nguồn định kỳ hoặc hạ mục tiêu.`;
+        renderPullsResult(total);
+        analysisCtx = { days: 365, reference, start, goal };
+        return;
+      }
+      analysisCtx = { days: d, reference, start, goal };
+      document.getElementById('a-result').innerHTML = fmt(d) + '<span class="unit">ngày</span>';
+      document.getElementById('a-detail').innerHTML =
+        `Vào ngày thứ <b>${fmt(d)}</b> (<b>${dateVi(reference, d - 1)}</b>), bạn sẽ có khoảng <b>${fmt(total)}</b> Annulith, trung bình <b>${fmt(dailyRate(sources))}</b> Annulith / ngày từ ${sources.length} nguồn.<br>${versionLine(d)}`;
+      renderPullsResult(total);
+
+    } else if (accumMode === 'future'){
+      const days = parseFloat(document.getElementById('a-days').value) || 0;
+      const reference = todayNoTime();
+      document.getElementById('a-label').textContent = `Annulith sau ${fmt(days)} ngày`;
+      const total = accumAfterDays(start, sources, days, reference);
+      analysisCtx = { days, reference, start };
+      document.getElementById('a-result').innerHTML = fmt(total) + '<span class="unit">Annulith</span>';
+
+      if (sources.length === 0){
+        document.getElementById('a-detail').innerHTML = `Chỉ tính từ <b>${fmt(start)}</b> Annulith hiện có — chưa có nguồn thu nào được nhập.<br>${versionLine(days)}`;
+      } else {
+        const breakdown = sources.map(s => {
+          const single = accumAfterDays(0, [s], days, reference);
+          return `${esc(s.name)}: <b>${fmt(single)}</b> (${periodLabel(s)})`;
+        }).join(', ');
+        document.getElementById('a-detail').innerHTML = `Gồm <b>${fmt(start)}</b> hiện có, cộng thêm từ ${breakdown}.<br>${versionLine(days)}`;
+      }
+      renderPullsResult(total);
+
+    } else {
+      const fromVal = document.getElementById('a-date-from').value;
+      const toVal = document.getElementById('a-date-to').value;
+      document.getElementById('a-label').textContent = 'Annulith tích luỹ trong khoảng';
+
+      if (!fromVal || !toVal){
+        document.getElementById('a-result').innerHTML = '—';
+        document.getElementById('a-detail').innerHTML = 'Chọn cả ngày bắt đầu và ngày kết thúc.';
+        renderPullsResult(start);
+        return;
+      }
+
+      const from = new Date(fromVal + 'T00:00:00');
+      const to = new Date(toVal + 'T00:00:00');
+      const days = Math.round((to - from) / 86400000);
+
+      if (days < 0){
+        document.getElementById('a-result').innerHTML = '—';
+        document.getElementById('a-detail').innerHTML = 'Ngày kết thúc phải sau ngày bắt đầu.';
+        renderPullsResult(start);
+        return;
+      }
+
+      const total = accumAfterDays(start, sources, days, from);
+      analysisCtx = { days, reference: from, start };
+      document.getElementById('a-result').innerHTML = fmt(total) + '<span class="unit">Annulith</span>';
+      document.getElementById('a-detail').innerHTML =
+        `Khoảng thời gian <b>${fmt(days)}</b> ngày (${fromVal} → ${toVal}), bắt đầu từ <b>${fmt(start)}</b> Annulith hiện có.<br>${versionLine(days)}`;
+      renderPullsResult(total);
+    }
+  }
+
+  document.getElementById('a-crystals').addEventListener('input', () => { renderNowPulls(); calcAccum(); });
+  document.getElementById('a-goal').addEventListener('input', calcAccum);
+  document.getElementById('a-days').addEventListener('input', calcAccum);
+  document.getElementById('a-date-from').addEventListener('input', calcAccum);
+  document.getElementById('a-date-to').addEventListener('input', calcAccum);
+  document.getElementById('a-version-len').addEventListener('input', calcAccum);
+
+  // sensible default date range: today -> +42 days (used when there's no saved state)
+  (function initDates(){
+    const today = new Date();
+    const vlen = parseFloat(document.getElementById('a-version-len').value) || 42;
+    const later = new Date(today.getFullYear(), today.getMonth(), today.getDate() + Math.round(vlen));
+    const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    document.getElementById('a-date-from').value = iso(today);
+    document.getElementById('a-date-to').value = iso(later);
+  })();
+
+
+  // ==================== v2: pity helper, analysis, copy ====================
+  const CUR = 'Annulith';
+  const HAS_5050 = false;
+  const DEFAULT_SINGLE = 160;
+  const DEFAULT_VLEN = 42;
+
+  function elv(id){ const e = document.getElementById(id); return e ? e.value : ''; }
+  function setv(id, v){ const e = document.getElementById(id); if (e && v !== undefined && v !== null) e.value = v; }
+  function singlePrice(){ return parseFloat(elv('g-single')) || DEFAULT_SINGLE; }
+
+  function dateVi(base, plus){
+    const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + plus);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${weekdayNames[d.getDay()]}, ${dd}/${mm}/${d.getFullYear()}`;
+  }
+
+  // Worst-case number of pulls needed to be certain of getting `count` targets.
+  function pityCalc(){
+    const H = Math.floor(parseFloat(elv('p-hard')) || 0);
+    const count = Math.max(1, Math.floor(parseFloat(elv('p-count')) || 1));
+    if (H <= 0) return { ok: false, H: 0, count };
+    const p = Math.min(Math.max(0, Math.floor(parseFloat(elv('p-current')) || 0)), H - 1);
+    const guaranteed = HAS_5050 && elv('p-guaranteed') === '1';
+    let pulls = H - p;
+    if (HAS_5050 && !guaranteed) pulls += H;
+    pulls += (count - 1) * H * (HAS_5050 ? 2 : 1);
+    return { ok: true, H, count, p, guaranteed, pulls };
+  }
+
+  function setGoalPulls(pulls){
+    document.getElementById('a-goal').value = Math.round(pulls * singlePrice());
+    calcAccum();
+  }
+
+  function renderPity(){
+    const r = pityCalc();
+    const price = singlePrice();
+    const chips = [{ pulls: 10, label: '10 lượt' }];
+    if (r.ok){
+      chips.push({ pulls: r.H, label: `${fmt(r.H)} lượt · ${HAS_5050 ? 'pity cứng' : 'pity'}` });
+      if (HAS_5050) chips.push({ pulls: r.H * 2, label: `${fmt(r.H * 2)} lượt · đảm bảo` });
+    }
+    document.getElementById('goal-chips').innerHTML =
+      chips.map(c => `<button type="button" class="goal-chip" data-pulls="${c.pulls}">${c.label}</button>`).join('');
+
+    const out = document.getElementById('pity-out');
+    const btn = document.getElementById('p-apply');
+    if (!r.ok){
+      out.innerHTML = 'Nhập số lượt bảo hiểm tối đa của banner để tính.';
+      btn.disabled = true;
+      return;
+    }
+    btn.disabled = false;
+    const need = r.pulls * price;
+    const have = parseFloat(elv('a-crystals')) || 0;
+    const missing = Math.max(0, need - have);
+    let line = `Trường hợp xấu nhất cần <b>${fmt(r.pulls)}</b> lượt`;
+    if (HAS_5050 && !r.guaranteed) line += ' (đã tính thua 50/50)';
+    line += ` = <b>${fmt(need)}</b> ${CUR}. `;
+    line += missing > 0
+      ? `Bạn đang có <b>${fmt(have)}</b>, còn thiếu <b>${fmt(missing)}</b>.`
+      : `Bạn đã đủ ${CUR} cho mục tiêu này.`;
+    out.innerHTML = line;
+  }
+
+  document.getElementById('goal-chips').addEventListener('click', (e) => {
+    const b = e.target.closest('.goal-chip');
+    if (b) setGoalPulls(parseFloat(b.dataset.pulls) || 0);
+  });
+  document.getElementById('p-apply').addEventListener('click', () => {
+    const r = pityCalc();
+    if (r.ok) setGoalPulls(r.pulls);
+  });
+  ['p-current', 'p-hard', 'p-count', 'p-guaranteed'].forEach(id => {
+    const e = document.getElementById(id);
+    if (!e) return;
+    e.addEventListener('input', calcAccum);
+    e.addEventListener('change', calcAccum);
+  });
+
+  // ---- analysis card: cumulative chart + per-source breakdown ----
+  function renderAnalysis(){
+    const card = document.getElementById('analysis-card');
+    const ctx = analysisCtx;
+    if (!ctx || !(ctx.days > 0)){ card.style.display = 'none'; return; }
+
+    const sources = readSources();
+    const { days, reference, start } = ctx;
+    const goal = ctx.goal > 0 ? ctx.goal : 0;
+
+    const rows = sources
+      .map(s => ({ name: s.name, value: accumAfterDays(0, [s], days, reference) }))
+      .filter(r => r.value > 0)
+      .sort((a, b) => b.value - a.value);
+    const gained = rows.reduce((t, r) => t + r.value, 0);
+    const total = start + gained;
+    if (total <= 0){ card.style.display = 'none'; return; }
+    card.style.display = 'block';
+
+    const pulls = pullsFromCrystals(total).totalPulls;
+    document.getElementById('an-meta').innerHTML =
+      `Trong <b>${fmt(days)}</b> ngày (${dateVi(reference, 0)} → ${dateVi(reference, days - 1)}): ` +
+      `nguồn định kỳ mang về <b>${fmt(gained)}</b> ${CUR}, cộng <b>${fmt(start)}</b> hiện có = <b>${fmt(total)}</b> ${CUR}, ` +
+      `khoảng <b>${fmt(pulls)}</b> lượt.`;
+
+    // ---- chart ----
+    const N = Math.min(Math.ceil(days), 90);
+    const pts = [];
+    for (let i = 0; i <= N; i++){
+      const day = Math.round(i * days / N);
+      pts.push({ x: day, y: accumAfterDays(start, sources, day, reference) });
+    }
+    const chartBox = document.getElementById('an-chart');
+    const W = Math.max(260, Math.round(chartBox.clientWidth || 400));
+    const H = Math.round(Math.min(230, Math.max(150, W * 0.52)));
+    const L = 50, R = 10, T = 14, B = 28;
+    const yMax = Math.max(pts[pts.length - 1].y, goal, 1) * 1.1;
+    const X = d => L + (d / days) * (W - L - R);
+    const Y = v => T + (1 - v / yMax) * (H - T - B);
+
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${X(p.x).toFixed(1)} ${Y(p.y).toFixed(1)}`).join(' ');
+    const area = `${line} L${X(days).toFixed(1)} ${Y(0).toFixed(1)} L${X(0).toFixed(1)} ${Y(0).toFixed(1)} Z`;
+
+    let marks = '';
+    const hard = Math.floor(parseFloat(elv('p-hard')) || 0);
+    if (hard > 0){
+      const step = hard * singlePrice();
+      for (let k = 1; k <= 6 && k * step < yMax; k++){
+        const y = Y(k * step).toFixed(1);
+        marks += `<line class="ch-pity" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/>` +
+                 `<text class="ch-txt" x="${W - R}" y="${(y - 3)}" text-anchor="end">${fmt(k * hard)} lượt</text>`;
+      }
+    }
+    if (goal > 0 && goal < yMax){
+      const y = Y(goal).toFixed(1);
+      marks += `<line class="ch-goal" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/>` +
+               `<text class="ch-txt gold" x="${L + 4}" y="${(y - 4)}">Mục tiêu ${fmt(goal)}</text>`;
+    }
+
+    document.getElementById('an-chart').innerHTML =
+      `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ ${CUR} tích luỹ theo ngày">` +
+        `<line class="ch-grid" x1="${L}" x2="${W - R}" y1="${Y(yMax / 1.1).toFixed(1)}" y2="${Y(yMax / 1.1).toFixed(1)}"/>` +
+        `<line class="ch-axis" x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}"/>` +
+        `<path class="ch-area" d="${area}"/>` +
+        marks +
+        `<path class="ch-line" d="${line}"/>` +
+        `<text class="ch-txt" x="${L - 6}" y="${Y(0) + 3}" text-anchor="end">0</text>` +
+        `<text class="ch-txt" x="${L - 6}" y="${Y(yMax / 1.1) + 3}" text-anchor="end">${fmt(yMax / 1.1)}</text>` +
+        `<text class="ch-txt" x="${L}" y="${H - 8}">Hôm nay</text>` +
+        `<text class="ch-txt" x="${W - R}" y="${H - 8}" text-anchor="end">${fmt(days)} ngày</text>` +
+      `</svg>`;
+
+    // ---- breakdown ----
+    const all = start > 0 ? [{ name: 'Đang có sẵn', value: start, own: true }].concat(rows) : rows;
+    const maxV = Math.max(...all.map(r => r.value));
+    document.getElementById('an-bars').innerHTML = all.map(r => {
+      const pct = (r.value / total) * 100;
+      return `<div class="bd-row${r.own ? ' own' : ''}">` +
+        `<div class="bd-top"><span class="bd-name">${esc(r.name)}</span>` +
+        `<span class="bd-val">${fmt(r.value)}<i>${pct < 1 ? '<1' : Math.round(pct)}%</i></span></div>` +
+        `<div class="bd-bar"><span style="width:${Math.max(2, (r.value / maxV) * 100).toFixed(1)}%"></span></div></div>`;
+    }).join('');
+  }
+
+  // ---- copy result ----
+  function plainText(id){
+    const c = document.getElementById(id).cloneNode(true);
+    c.querySelectorAll('.unit').forEach(u => { u.textContent = ' ' + u.textContent; });
+    c.querySelectorAll('br').forEach(b => b.replaceWith(' '));
+    return c.textContent.replace(/\s+/g, ' ').trim();
+  }
+
+  async function copyText(t){
+    try { await navigator.clipboard.writeText(t); return true; } catch (e){ /* fall through */ }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = t;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e){ return false; }
+  }
+
+  document.getElementById('a-copy').addEventListener('click', async () => {
+    const btn = document.getElementById('a-copy');
+    const text = [
+      `${plainText('a-label')}: ${plainText('a-result')}`,
+      plainText('a-detail'),
+      `Quy đổi: ${plainText('a-pulls')} — ${plainText('a-pulls-detail')}`
+    ].join('\n');
+    const ok = await copyText(text);
+    const old = btn.textContent;
+    btn.textContent = ok ? 'Đã sao chép ✓' : 'Không sao chép được';
+    setTimeout(() => { btn.textContent = old; }, 1600);
+  });
+
+  // keep the chart crisp when the phone rotates / the window resizes
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (analysisCtx) renderAnalysis(); }, 150);
+  });
+
+  if (savedState){
+    applyState(savedState);
+  } else {
+    defaultSources.forEach(addSourceRow);
+    renderNowPulls();
+    calcAccum();
+  }
+
+  // ==================== PWA: service worker + file-backed storage ====================
+  const FS_KEY = STORAGE_KEY + ':fileHandle';
+  const DEFAULT_FILENAME = 'annulith-data.json';
+
+  // --- tiny IndexedDB key/value store (a file handle can't go in localStorage) ---
+  function idbOpen(){
+    return new Promise((res, rej) => {
+      const r = indexedDB.open('calcStorage', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('kv');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  function idbRun(mode, fn){
+    return idbOpen().then(db => new Promise((res, rej) => {
+      const req = fn(db.transaction('kv', mode).objectStore('kv'));
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    })).catch(() => null);
+  }
+  const idbGet = k => idbRun('readonly', s => s.get(k));
+  const idbSet = (k, v) => idbRun('readwrite', s => s.put(v, k));
+  const idbDel = k => idbRun('readwrite', s => s.delete(k));
+
+  const fsSupported = typeof window.showSaveFilePicker === 'function';
+  let fileHandle = null;
+  let fsWriteTimer = null;
+  let fsApplying = false;
+
+  function fsStatus(msg, warn){
+    const el = document.getElementById('fs-status');
+    el.innerHTML = msg;
+    el.classList.toggle('warn', !!warn);
+    document.getElementById('fs-unlink').style.display = fileHandle ? 'inline-block' : 'none';
+    document.getElementById('fs-link').textContent = fileHandle ? 'Đổi file' : 'Tự lưu vào file trên máy';
+  }
+
+  async function fsWrite(){
+    if (!fileHandle) return;
+    try {
+      const w = await fileHandle.createWritable();
+      await w.write(JSON.stringify(buildStateObject(), null, 2));
+      await w.close();
+      const t = new Date();
+      fsStatus(`Đang lưu vào <b>${esc(fileHandle.name)}</b> — lúc ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`);
+    } catch (err){
+      fsStatus(`Không ghi được vào <b>${esc(fileHandle.name)}</b>. Dữ liệu vẫn được lưu trong trình duyệt.`, true);
+    }
+  }
+
+  function fsScheduleWrite(){
+    if (!fileHandle || fsApplying) return;
+    clearTimeout(fsWriteTimer);
+    fsWriteTimer = setTimeout(fsWrite, 600);
+  }
+
+  // saveState already runs on every change — piggyback the file write onto it.
+  const saveStateToBrowser = saveState;
+  saveState = function(){
+    saveStateToBrowser();
+    fsScheduleWrite();
+  };
+
+  async function fsReadInto(){
+    try {
+      const file = await fileHandle.getFile();
+      const text = await file.text();
+      if (!text.trim()) { await fsWrite(); return; }
+      const state = JSON.parse(text);
+      if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('invalid');
+      fsApplying = true;
+      applyState(state);
+      fsApplying = false;
+      fsStatus(`Đã đọc dữ liệu từ <b>${esc(fileHandle.name)}</b>`);
+    } catch (err){
+      fsApplying = false;
+      fsStatus(`Không đọc được <b>${esc(fileHandle.name)}</b> — đang dùng dữ liệu lưu trong trình duyệt.`, true);
+    }
+  }
+
+  document.getElementById('fs-link').addEventListener('click', async () => {
+    try {
+      fileHandle = await window.showSaveFilePicker({
+        suggestedName: DEFAULT_FILENAME,
+        types: [{ description: 'Dữ liệu calculator', accept: { 'application/json': ['.json'] } }]
+      });
+      await idbSet(FS_KEY, fileHandle);
+      await fsWrite();
+    } catch (err){
+      if (err && err.name === 'AbortError') return;
+      fsStatus('Không mở được hộp thoại chọn file.', true);
+    }
+  });
+
+  document.getElementById('fs-unlink').addEventListener('click', async () => {
+    fileHandle = null;
+    await idbDel(FS_KEY);
+    fsStatus('Đã ngắt. Dữ liệu vẫn được lưu trong trình duyệt này.');
+  });
+
+  (async function fsInit(){
+    const row = document.getElementById('fs-row');
+    if (!fsSupported){
+      row.style.display = 'flex';
+      document.getElementById('fs-link').style.display = 'none';
+      const touch = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+      fsStatus(touch
+        ? 'Trên điện thoại, dữ liệu được lưu ngay trong app. Muốn chuyển sang máy khác, dùng "Sao chép mã" hoặc "Chia sẻ file".'
+        : 'Trình duyệt này chưa hỗ trợ tự lưu ra file. Dữ liệu vẫn được lưu trong trình duyệt — dùng "Xuất file" để sao lưu.');
+      return;
+    }
+    row.style.display = 'flex';
+    const saved = await idbGet(FS_KEY);
+    if (!saved){
+      fsStatus('Dữ liệu đang lưu trong trình duyệt này. Chọn một file .json để app tự ghi vào đó mỗi lần bạn sửa.');
+      return;
+    }
+    const perm = await saved.queryPermission({ mode: 'readwrite' }).catch(() => 'denied');
+    if (perm === 'granted'){
+      fileHandle = saved;
+      await fsReadInto();
+    } else {
+      fsStatus(`Bấm "Tự lưu vào file trên máy" để kết nối lại với <b>${esc(saved.name)}</b>.`);
+      document.getElementById('fs-link').addEventListener('click', async function reconnect(e){
+        const p = await saved.requestPermission({ mode: 'readwrite' }).catch(() => 'denied');
+        if (p === 'granted'){
+          e.stopImmediatePropagation();
+          fileHandle = saved;
+          await fsReadInto();
+          document.getElementById('fs-link').removeEventListener('click', reconnect, true);
+        }
+      }, true);
+    }
+  })();
+
+  // --- service worker + update prompt ---
+  if ('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then((reg) => {
+        reg.addEventListener('updatefound', () => {
+          const sw = reg.installing;
+          if (!sw) return;
+          sw.addEventListener('statechange', () => {
+            if (sw.state === 'installed' && navigator.serviceWorker.controller){
+              const t = document.createElement('div');
+              t.className = 'sw-toast';
+              t.innerHTML = '<span>Đã có bản cập nhật.</span><button type="button">Tải lại</button>';
+              t.querySelector('button').addEventListener('click', () => location.reload());
+              document.body.appendChild(t);
+            }
+          });
+        });
+      }).catch(() => { /* offline support unavailable — the app still works */ });
+    });
+  }
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+  // ==================== phone-friendly transfer: text code + share sheet ====================
+  const xferPanel = document.getElementById('xfer-panel');
+  const xferInput = document.getElementById('xfer-input');
+  function xferMsg(html, warn){
+    const el = document.getElementById('xfer-msg');
+    el.innerHTML = html;
+    el.classList.toggle('warn', !!warn);
+  }
+  function bytesToB64url(bytes){
+    let s = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function b64urlToBytes(str){
+    let b = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (b.length % 4) b += '=';
+    const bin = atob(b);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  // push bytes through a (De)CompressionStream; capped so a hostile code can't balloon in memory
+  async function runStream(bytes, stream, maxOut){
+    const writer = stream.writable.getWriter();
+    writer.write(bytes).catch(() => {});
+    writer.close().catch(() => {});
+    const reader = stream.readable.getReader();
+    const chunks = [];
+    let n = 0;
+    for (;;){
+      const r = await reader.read();
+      if (r.done) break;
+      n += r.value.length;
+      if (n > maxOut){ reader.cancel().catch(() => {}); throw new Error('too big'); }
+      chunks.push(r.value);
+    }
+    const out = new Uint8Array(n);
+    let o = 0;
+    chunks.forEach(c => { out.set(c, o); o += c.length; });
+    return out;
+  }
+  async function encodeState(){
+    const raw = new TextEncoder().encode(JSON.stringify(buildStateObject()));
+    if (typeof CompressionStream === 'function'){
+      try { return 'GC1:' + bytesToB64url(await runStream(raw, new CompressionStream('gzip'), 4e6)); }
+      catch (e){ /* fall back to the uncompressed form */ }
+    }
+    return 'GC0:' + bytesToB64url(raw);
+  }
+  async function decodeCode(text){
+    const clean = String(text || '').replace(/\s+/g, '');
+    const m = /^GC([01]):([A-Za-z0-9_-]+)$/.exec(clean);
+    if (!m || clean.length > 600000) throw new Error('format');
+    let bytes = b64urlToBytes(m[2]);
+    if (m[1] === '1'){
+      if (typeof DecompressionStream !== 'function'){
+        const err = new Error('nodecomp');
+        err.userMessage = 'Trình duyệt này chưa giải nén được mã. Hãy cập nhật trình duyệt hoặc dùng "Nhập file".';
+        throw err;
+      }
+      bytes = await runStream(bytes, new DecompressionStream('gzip'), 2e6);
+    }
+    const state = JSON.parse(new TextDecoder().decode(bytes));
+    if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('shape');
+    if (state.sources !== undefined && (!Array.isArray(state.sources) || state.sources.length > 200 ||
+        state.sources.some(s => !s || typeof s !== 'object'))) throw new Error('sources');
+    return state;
+  }
+
+  document.getElementById('xfer-copy').addEventListener('click', async () => {
+    try {
+      const code = await encodeState();
+      if (await copyText(code)){
+        xferMsg('Đã sao chép mã (' + fmt(code.length) + ' ký tự). Dán vào Zalo hoặc Ghi chú, rồi mở app ở máy kia và bấm "Dán mã".');
+      } else {
+        xferPanel.style.display = 'block';
+        xferInput.value = code;
+        xferInput.focus();
+        xferInput.select();
+        xferMsg('Không tự sao chép được. Mã đã hiện trong ô bên dưới — bấm giữ để chọn và sao chép.', true);
+      }
+    } catch (e){ xferMsg('Không tạo được mã.', true); }
+  });
+  document.getElementById('xfer-paste').addEventListener('click', async () => {
+    xferPanel.style.display = 'block';
+    xferMsg('');
+    try {
+      if (navigator.clipboard && navigator.clipboard.readText){
+        const t = await navigator.clipboard.readText();
+        if (/GC[01]:/.test(t)) xferInput.value = t.trim();
+      }
+    } catch (e){ /* permission denied — the person can paste by hand */ }
+    if (!xferInput.value) xferInput.focus();
+  });
+  document.getElementById('xfer-cancel').addEventListener('click', () => {
+    xferPanel.style.display = 'none';
+    xferInput.value = '';
+  });
+  document.getElementById('xfer-apply').addEventListener('click', async () => {
+    try {
+      const state = await decodeCode(xferInput.value);
+      if (!window.confirm('Ghi đè dữ liệu hiện tại bằng dữ liệu trong mã này?')) return;
+      applyState(state);
+      saveState();
+      xferInput.value = '';
+      xferPanel.style.display = 'none';
+      xferMsg('Đã nhập dữ liệu từ mã.');
+    } catch (e){
+      xferMsg((e && e.userMessage) || 'Mã không hợp lệ hoặc bị cắt mất một đoạn. Hãy sao chép lại toàn bộ mã.', true);
+    }
+  });
+
+  // share sheet (Android Chrome, iOS Safari): send the data file straight to Zalo, Drive, Mail...
+  (function initShare(){
+    try {
+      const probe = new File(['{}'], 'annulith-data.json', { type: 'application/json' });
+      if (!(navigator.share && navigator.canShare && navigator.canShare({ files: [probe] }))) return;
+      const btn = document.getElementById('xfer-share');
+      btn.style.display = 'inline-block';
+      btn.addEventListener('click', async () => {
+        try {
+          const f = new File([JSON.stringify(buildStateObject(), null, 2)], 'annulith-data.json', { type: 'application/json' });
+          await navigator.share({ files: [f], title: 'Dữ liệu Annulith' });
+        } catch (e){
+          if (!e || e.name !== 'AbortError') xferMsg('Không mở được bảng chia sẻ. Thử "Sao chép mã".', true);
+        }
+      });
+    } catch (e){ /* share not available */ }
+  })();
+
+  // install button (Chrome/Edge/Android) and the Safari hint (iOS)
+  (function initInstall(){
+    const row = document.getElementById('pwa-row');
+    const btn = document.getElementById('pwa-install');
+    const hint = document.getElementById('pwa-hint');
+    const HIDE_KEY = STORAGE_KEY + ':hideInstall';
+    const standalone = !!((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true);
+    let dismissed = false;
+    try { dismissed = localStorage.getItem(HIDE_KEY) === '1'; } catch (e){ /* storage blocked */ }
+    if (standalone || dismissed) return;
+    let deferred = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferred = e;
+      btn.style.display = 'inline-block';
+      hint.textContent = 'Cài về máy để mở như một app và dùng được khi không có mạng.';
+      row.style.display = 'flex';
+    });
+    window.addEventListener('appinstalled', () => { row.style.display = 'none'; });
+    btn.addEventListener('click', async () => {
+      if (!deferred) return;
+      deferred.prompt();
+      try { await deferred.userChoice; } catch (e){ /* ignore */ }
+      deferred = null;
+      row.style.display = 'none';
+    });
+    document.getElementById('pwa-hide').addEventListener('click', () => {
+      try { localStorage.setItem(HIDE_KEY, '1'); } catch (e){ /* ignore */ }
+      row.style.display = 'none';
+    });
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (ios){
+      hint.innerHTML = 'Để cài: bấm nút <b>Chia sẻ</b> của Safari, rồi chọn <b>Thêm vào MH chính</b>.';
+      row.style.display = 'flex';
+    }
+  })();
+
+</script>
+
+</body>
+</html>
