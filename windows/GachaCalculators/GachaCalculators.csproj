@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>GachaCalculators</AssemblyName>
+    <RootNamespace>GachaCalculators</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\index.html" LogicalName="WebAssets/index.html" />
+    <EmbeddedResource Include="..\..\genshin\index.html;..\..\genshin\manifest.json;..\..\genshin\sw.js;..\..\genshin\icon-*.png;..\..\genshin\favicon.ico" LogicalName="WebAssets/genshin/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\hsr\index.html;..\..\hsr\manifest.json;..\..\hsr\sw.js;..\..\hsr\icon-*.png;..\..\hsr\favicon.ico" LogicalName="WebAssets/hsr/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\hi3\index.html;..\..\hi3\manifest.json;..\..\hi3\sw.js;..\..\hi3\icon-*.png;..\..\hi3\favicon.ico" LogicalName="WebAssets/hi3/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\zzz\index.html;..\..\zzz\manifest.json;..\..\zzz\sw.js;..\..\zzz\icon-*.png;..\..\zzz\favicon.ico" LogicalName="WebAssets/zzz/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\wuwa\index.html;..\..\wuwa\manifest.json;..\..\wuwa\sw.js;..\..\wuwa\icon-*.png;..\..\wuwa\favicon.ico" LogicalName="WebAssets/wuwa/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>
