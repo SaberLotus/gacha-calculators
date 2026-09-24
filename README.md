@@ -1,6 +1,6 @@
 # Gacha Calculators — cài trên Windows và điện thoại
 
-Bộ này gồm 5 app riêng biệt. Mỗi app cài độc lập và lưu dữ liệu riêng:
+Bộ này gồm 6 app riêng biệt. Mỗi app cài độc lập và lưu dữ liệu riêng:
 
 ```
 calculators/
@@ -10,6 +10,7 @@ calculators/
   hi3/              ← Pha Lê Calculator (Honkai Impact 3rd)
   zzz/              ← Polychrome Calculator (Zenless Zone Zero)
   wuwa/             ← Astrite Calculator (Wuthering Waves)
+  nte/              ← Annulith Calculator (Neverness to Everness)
 ```
 
 Quan trọng: app **phải chạy qua http/https**, không mở bằng cách bấm đúp vào file. Mở kiểu `file://` thì trình duyệt chặn cài đặt và chặn chạy offline.
@@ -25,8 +26,11 @@ Quan trọng: app **phải chạy qua http/https**, không mở bằng cách b�
 | Honkai Impact 3rd | 280 Pha Lê | tuỳ banner, bạn tự điền | Không |
 | Zenless Zone Zero | 160 Polychrome | 90 (S-Rank Agent) | Có |
 | Wuthering Waves | 160 Astrite | 80 (5★ Resonator) | Có |
+| Neverness to Everness | 160 Annulith = 1 Solid Dice | 90 (nhân vật nổi bật Fair Board) | Không |
 
 Banner vũ khí có luật riêng: ZZZ 80 lượt với tỉ lệ 75/25, WuWa 80 lượt và không có 50/50, Genshin và HSR 80 lượt. Khi tính cho banner vũ khí, sửa ô "Lượt bảo hiểm tối đa" cho đúng.
+
+NTE dùng bảo đảm tối đa 90 lượt cho nhân vật nổi bật và không có 50/50. Calculator đặt nguồn thu mặc định bằng 0 để bạn tự nhập theo phần thưởng trong game; không mô phỏng phần thưởng từng ô, Arc hay trang phục.
 
 Danh sách nguồn thu mặc định chỉ là điểm khởi đầu theo mức F2P thông thường. Sự kiện và phần thưởng thay đổi mỗi phiên bản, nên hãy sửa lại theo tài khoản của bạn — app sẽ nhớ.
 
