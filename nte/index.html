@@ -1067,6 +1067,25 @@
         <div class="copy-row"><button class="io-src" id="a-copy" type="button">Sao chép kết quả</button></div>
     </div>
 
+    <div class="card" id="fons-card">
+      <h2>Máy tính Fons — tiền trong game</h2>
+      <p class="src-note">Fons được tính riêng, không cộng chung với Annulith. Nhập số dư, mục tiêu và lượng bạn thường kiếm được để ước tính thời gian cần tích lũy.</p>
+      <div class="row2">
+        <div class="field"><label for="fons-balance">Fons hiện có</label><input type="number" id="fons-balance" inputmode="numeric" min="0" value="0"></div>
+        <div class="field"><label for="fons-goal">Mục tiêu Fons</label><input type="number" id="fons-goal" inputmode="numeric" min="0" placeholder="Nhập mục tiêu"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="fons-daily">Kiếm mỗi ngày</label><input type="number" id="fons-daily" inputmode="numeric" min="0" value="0"></div>
+        <div class="field"><label for="fons-weekly">Kiếm mỗi tuần</label><input type="number" id="fons-weekly" inputmode="numeric" min="0" value="0"></div>
+      </div>
+      <div class="field"><label for="fons-version">Kiếm mỗi phiên bản (dài <span id="fons-version-days">42</span> ngày)</label><input type="number" id="fons-version" inputmode="numeric" min="0" value="0"></div>
+      <div class="result fons-result">
+        <p class="label">Dự kiến đạt mục tiêu sau</p>
+        <div class="big small" id="fons-days">—</div>
+        <div class="detail" id="fons-detail">Nhập mục tiêu Fons và mức kiếm được để tính.</div>
+      </div>
+    </div>
+
     <div class="card" id="analysis-card" style="display:none; margin-top:16px;">
       <h2>Phân tích chi tiết</h2>
       <div class="an-meta" id="an-meta"></div>
@@ -1342,7 +1361,12 @@
       pityCurrent: elv('p-current'),
       pityHard: elv('p-hard'),
       pityCount: elv('p-count'),
-      pityGuaranteed: elv('p-guaranteed')
+      pityGuaranteed: elv('p-guaranteed'),
+      fonsBalance: elv('fons-balance'),
+      fonsGoal: elv('fons-goal'),
+      fonsDaily: elv('fons-daily'),
+      fonsWeekly: elv('fons-weekly'),
+      fonsVersion: elv('fons-version')
     };
   }
 
@@ -1372,6 +1396,11 @@
     setv('p-hard', state.pityHard);
     setv('p-count', state.pityCount);
     setv('p-guaranteed', state.pityGuaranteed);
+    setv('fons-balance', state.fonsBalance);
+    setv('fons-goal', state.fonsGoal);
+    setv('fons-daily', state.fonsDaily);
+    setv('fons-weekly', state.fonsWeekly);
+    setv('fons-version', state.fonsVersion);
     if (state.dateFrom) document.getElementById('a-date-from').value = state.dateFrom;
     if (state.dateTo) document.getElementById('a-date-to').value = state.dateTo;
     if (state.mode){
@@ -1382,6 +1411,7 @@
       document.getElementById('a-range-field').style.display = accumMode === 'range' ? 'grid' : 'none';
     }
     renderNowPulls();
+    renderFons();
     calcAccum();
   }
 
@@ -1706,6 +1736,40 @@
   function setv(id, v){ const e = document.getElementById(id); if (e && v !== undefined && v !== null) e.value = v; }
   function singlePrice(){ return parseFloat(elv('g-single')) || DEFAULT_SINGLE; }
 
+  // Fons has its own balance and income rate, separate from Annulith.
+  function renderFons(){
+    const balance = Math.max(0, Number(elv('fons-balance')) || 0);
+    const goal = Math.max(0, Number(elv('fons-goal')) || 0);
+    const daily = Math.max(0, Number(elv('fons-daily')) || 0);
+    const weekly = Math.max(0, Number(elv('fons-weekly')) || 0);
+    const perVersion = Math.max(0, Number(elv('fons-version')) || 0);
+    const versionDays = Math.max(1, Number(elv('a-version-len')) || 42);
+    document.getElementById('fons-version-days').textContent = String(versionDays);
+    const result = document.getElementById('fons-days');
+    const detail = document.getElementById('fons-detail');
+    if (!goal){
+      result.textContent = '—';
+      detail.textContent = 'Nhập mục tiêu Fons và mức kiếm được để tính.';
+    } else if (balance >= goal){
+      result.textContent = '0 ngày';
+      detail.textContent = 'Bạn đã đủ Fons cho mục tiêu này.';
+    } else {
+      const perDay = daily + weekly / 7 + perVersion / versionDays;
+      if (perDay <= 0){
+        result.textContent = '—';
+        detail.textContent = 'Nhập lượng Fons bạn thường kiếm được mỗi ngày, tuần hoặc phiên bản.';
+      } else {
+        const days = Math.ceil((goal - balance) / perDay);
+        result.textContent = days.toLocaleString('vi-VN') + ' ngày';
+        detail.textContent = 'Còn thiếu ' + Math.ceil(goal - balance).toLocaleString('vi-VN') +
+          ' Fons; ước tính theo trung bình ' + perDay.toLocaleString('vi-VN', { maximumFractionDigits: 1 }) + ' Fons/ngày.';
+      }
+    }
+  }
+  ['fons-balance', 'fons-goal', 'fons-daily', 'fons-weekly', 'fons-version'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => { renderFons(); saveState(); });
+  });
+
   function dateVi(base, plus){
     const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + plus);
     const dd = String(d.getDate()).padStart(2, '0');
@@ -1909,6 +1973,7 @@
   } else {
     defaultSources.forEach(addSourceRow);
     renderNowPulls();
+    renderFons();
     calcAccum();
   }
 
