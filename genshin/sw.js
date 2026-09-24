@@ -1,5 +1,5 @@
 // Service worker — cache-first for the app shell so it runs offline.
-const CACHE = 'genshin-v5';
+const CACHE = 'genshin-v6';
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './character-icon.jpg'];
 
 self.addEventListener('install', (e) => {
