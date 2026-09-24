@@ -93,7 +93,7 @@ internal static class Program
     {
         using var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\GachaCalculators");
         key.SetValue("DisplayName", "Gacha Calculators");
-        key.SetValue("DisplayVersion", "1.0.0");
+        key.SetValue("DisplayVersion", "1.2.0");
         key.SetValue("Publisher", "SaberLotus");
         key.SetValue("InstallLocation", InstallDirectory);
         key.SetValue("UninstallString", $"\"{InstalledExe}\" --uninstall");
