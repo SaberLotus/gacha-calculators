@@ -964,6 +964,10 @@
             <input type="file" id="a-import-file" accept="application/json" style="display:none;">
           </div>
         </div>
+        <div class="fs-row" id="app-update-row">
+          <button class="io-src" id="app-check-update" type="button" disabled>Kiểm tra cập nhật</button>
+          <span class="fs-status" id="app-update-status" role="status">Bản ứng dụng 2026.09.28</span>
+        </div>
         <div class="fs-row" id="pwa-row" style="display:none;">
           <button class="io-src" id="pwa-install" type="button" style="display:none;">Cài app</button>
           <span class="fs-status" id="pwa-hint"></span>
@@ -990,6 +994,13 @@
         </div>
         <p class="src-note">Mọi thay đổi bạn nhập được lưu tự động trong app này. Trên máy tính (Chrome/Edge), "Tự lưu vào file trên máy" ghi thẳng vào một file .json — đặt file đó trong OneDrive hoặc Google Drive là có luôn sao lưu. Để chuyển dữ liệu giữa laptop và điện thoại: bấm "Sao chép mã", gửi mã cho chính mình (Zalo, Ghi chú...), rồi bấm "Dán mã" trên máy kia.</p>
         <p class="src-note">Mỗi phiên bản: 5 vé thường (Master Tape) và 5 vé banner giới hạn (Encrypted Master Tape); vé thường tách khỏi pity banner giới hạn, còn 5 vé banner đã quy đổi thành 800 Polychrome trong nguồn bên dưới.</p>
+        <details class="src-note" id="source-assumptions">
+          <summary style="cursor:pointer; padding:8px 0;">Thông số mẫu và điều kiện tính</summary>
+          <p>Các mức thưởng và lịch nhận có sẵn là mẫu tham khảo, chưa được đối chiếu với phiên bản game hiện tại. Hãy sửa theo tài khoản của bạn trước khi dùng kết quả để lên kế hoạch.</p>
+          <p>Bộ mặc định mới chỉ bật nhiệm vụ hằng ngày và vé cửa hàng. Nguồn trả phí, sự kiện và các nguồn có điều kiện khác được tắt sẵn; chỉ bật khoản bạn thực sự sẽ nhận. Các cấu hình bạn đã lưu được giữ nguyên.</p>
+          <p>Thưởng một lần chỉ nên giữ nếu chưa nhận. “Mỗi tháng” được tính theo chu kỳ 30 ngày; lịch reset thực tế có thể khác. Bạn có thể đặt ngày nhận tiếp theo, ngày hết hạn hoặc chọn ngày nhận cụ thể.</p>
+          <p>Mẫu cửa hàng tính 5 vé thường và 5 vé banner mỗi phiên bản. Vé thường không tính vào pity banner giới hạn; hãy kiểm tra điều kiện đổi và lịch cửa hàng trong game.</p>
+        </details>
         <div id="a-src-list"></div>
         <div class="src-summary" id="src-summary"></div>
     </div>
@@ -1067,6 +1078,7 @@
         <p class="label" id="a-label">Bạn sẽ đủ mục tiêu sau</p>
         <div class="big" id="a-result">0<span class="unit">ngày</span></div>
         <div class="detail" id="a-detail"></div>
+        <p class="src-note" style="margin:12px 0 0;">Dự báo theo số dư, nguồn thu và lịch nhận bạn nhập. Ngày đạt mục tiêu là ước tính nếu nhận đủ các khoản đã bật.</p>
         <div class="divider"></div>
         <p class="label">Quy đổi ra lượt Signal Search</p>
         <div class="big small" id="a-pulls">0<span class="unit">lượt</span></div>
@@ -1153,15 +1165,15 @@
 
   const defaultSources = [
     { name: 'Nhiệm vụ hàng ngày (Errands)', amount: 60, period: 'daily' },
-    { name: 'Inter-Knot Membership (thẻ tháng)', amount: 90, period: 'daily' },
-    { name: 'Inter-Knot Membership — thưởng mua', amount: 300, period: 'custom', customDays: 30 },
-    { name: 'Hollow Zero', amount: 160, period: 'weekly' },
-    { name: 'Shiyu Defense (Critical)', amount: 780, period: 'custom', customDays: 14 },
-    { name: 'Deadly Assault', amount: 300, period: 'custom', customDays: 14 },
-    { name: 'Điểm danh HoYoLAB', amount: 0, period: 'monthly' },
-    { name: 'Sự kiện trong phiên bản', amount: 0, period: 'version' },
-    { name: 'Nhiệm vụ cốt truyện / Agent Story', amount: 0, period: 'once' },
-    { name: 'Thành tựu, mã quà tặng', amount: 0, period: 'once' },
+    { name: 'Inter-Knot Membership (thẻ tháng)', amount: 90, period: 'daily', enabled: false },
+    { name: 'Inter-Knot Membership — thưởng mua', amount: 300, period: 'custom', customDays: 30, enabled: false },
+    { name: 'Hollow Zero', amount: 160, period: 'weekly', enabled: false },
+    { name: 'Shiyu Defense (Critical)', amount: 780, period: 'custom', customDays: 14, enabled: false },
+    { name: 'Deadly Assault', amount: 300, period: 'custom', customDays: 14, enabled: false },
+    { name: 'Điểm danh HoYoLAB', amount: 0, period: 'monthly', enabled: false },
+    { name: 'Sự kiện trong phiên bản', amount: 0, period: 'version', enabled: false },
+    { name: 'Nhiệm vụ cốt truyện / Agent Story', amount: 0, period: 'once', enabled: false },
+    { name: 'Thành tựu, mã quà tặng', amount: 0, period: 'once', enabled: false },
     { name: 'Vé banner giới hạn từ cửa hàng (5 Encrypted Master Tape)', amount: 800, period: 'version', shopKey: 'shop-limited-5' },
   ];
 
@@ -1377,9 +1389,7 @@
     if (state.crystals !== undefined) document.getElementById('a-crystals').value = state.crystals;
     if (state.gSingle !== undefined) document.getElementById('g-single').value = state.gSingle;
     if (state.gTen !== undefined) document.getElementById('g-ten').value = state.gTen;
-    const savedSources = Array.isArray(state.sources) && state.sources.length ? [...state.sources] : [...defaultSources];
-    const savedShopKeys = new Set(savedSources.map(s => s.shopKey).filter(Boolean));
-    defaultSources.filter(s => s.shopKey && !savedShopKeys.has(s.shopKey)).forEach(s => savedSources.push({ ...s }));
+    const savedSources = Array.isArray(state.sources) ? state.sources : defaultSources;
     savedSources.forEach(s => addSourceRow(s));
     if (state.goal !== undefined) document.getElementById('a-goal').value = state.goal;
     if (state.days !== undefined) document.getElementById('a-days').value = state.days;
@@ -2064,24 +2074,72 @@
   })();
 
   // --- service worker + update prompt ---
+  const updateButton = document.getElementById('app-check-update');
+  const updateStatus = document.getElementById('app-update-status');
+  function showAppUpdate(){
+    updateStatus.textContent = 'Bản mới đã sẵn sàng. Tải lại để áp dụng.';
+    if (document.getElementById('app-update-toast')) return;
+    const toast = document.createElement('div');
+    toast.id = 'app-update-toast';
+    toast.className = 'sw-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML = '<span>Đã có bản cập nhật.</span><button type="button">Tải lại</button>';
+    toast.querySelector('button').addEventListener('click', () => {
+      saveState();
+      location.reload();
+    });
+    document.body.appendChild(toast);
+  }
   if ('serviceWorker' in navigator){
+    let hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController) showAppUpdate();
+      hadController = true;
+    });
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').then((reg) => {
-        reg.addEventListener('updatefound', () => {
-          const sw = reg.installing;
-          if (!sw) return;
-          sw.addEventListener('statechange', () => {
-            if (sw.state === 'installed' && navigator.serviceWorker.controller){
-              const t = document.createElement('div');
-              t.className = 'sw-toast';
-              t.innerHTML = '<span>Đã có bản cập nhật.</span><button type="button">Tải lại</button>';
-              t.querySelector('button').addEventListener('click', () => location.reload());
-              document.body.appendChild(t);
+      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
+        updateButton.disabled = false;
+        updateStatus.textContent = navigator.onLine
+          ? 'Bản ứng dụng 2026.09.28'
+          : 'Đang ngoại tuyến — dùng bản đã lưu.';
+        const watchInstall = () => {
+          const worker = reg.installing;
+          if (!worker) return;
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'activated'){
+              if (document.getElementById('app-update-toast')) return;
+              updateStatus.textContent = 'Bản ứng dụng 2026.09.28 · Sẵn sàng ngoại tuyến';
+            } else if (worker.state === 'redundant'){
+              updateStatus.textContent = 'Chưa tải được bản mới. Bạn có thể thử lại.';
             }
           });
+        };
+        reg.addEventListener('updatefound', watchInstall);
+        watchInstall();
+        updateButton.addEventListener('click', async () => {
+          updateButton.disabled = true;
+          updateStatus.textContent = 'Đang kiểm tra bản cập nhật…';
+          try {
+            await reg.update();
+            if (document.getElementById('app-update-toast')){
+              updateStatus.textContent = 'Bản mới đã sẵn sàng. Tải lại để áp dụng.';
+            } else {
+              updateStatus.textContent = reg.installing
+                ? 'Đang tải bản cập nhật…'
+                : 'Đã kiểm tra — bạn đang dùng bản mới nhất.';
+            }
+          } catch (e){
+            updateStatus.textContent = 'Không kiểm tra được. Hãy thử lại khi có mạng.';
+          } finally {
+            updateButton.disabled = false;
+          }
         });
-      }).catch(() => { /* offline support unavailable — the app still works */ });
+      }).catch(() => {
+        updateStatus.textContent = 'Chưa bật được chế độ ngoại tuyến. Hãy tải lại khi có mạng.';
+      });
     });
+  } else {
+    updateStatus.textContent = 'Trình duyệt này chưa hỗ trợ chế độ ngoại tuyến.';
   }
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 

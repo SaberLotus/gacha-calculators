@@ -34,7 +34,7 @@ NTE dùng bảo đảm tối đa 90 lượt cho nhân vật nổi bật và khô
 
 Ở Genshin, HSR, ZZZ, WuWa và NTE, nguồn vé cửa hàng mỗi phiên bản tính 5 vé banner giới hạn (quy đổi 800 đơn vị tiền quay ở giá 160/vé). 5 vé thường được ghi chú tách riêng, không tính vào pity banner giới hạn. HI3 không áp dụng mục này.
 
-Danh sách nguồn thu mặc định chỉ là điểm khởi đầu theo mức F2P thông thường. Sự kiện và phần thưởng thay đổi mỗi phiên bản, nên hãy sửa lại theo tài khoản của bạn — app sẽ nhớ.
+Danh sách nguồn thu là mẫu tham khảo, chưa được đối chiếu với phiên bản game hiện tại. Bộ mặc định mới chỉ bật nhiệm vụ hằng ngày và vé cửa hàng (trừ HI3); nguồn trả phí, sự kiện, thưởng một lần và các nguồn có điều kiện khác cần người dùng chủ động bật. Chỉnh số lượng và lịch nhận theo tài khoản của bạn trước khi dùng dự báo. Cấu hình đã lưu, bao gồm nguồn đã tắt hoặc đã xóa, được giữ nguyên khi cập nhật.
 
 ---
 
@@ -113,7 +113,20 @@ Muốn tự động đồng bộ không cần dán mã thì cần thêm một d�
 
 ## Cập nhật app
 
-Upload file mới đè lên repo. Lần mở tiếp theo, app hiện thông báo "Đã có bản cập nhật — Tải lại". Dữ liệu của bạn không bị mất.
+Mỗi app có nút **Kiểm tra cập nhật** và hiển thị phiên bản ứng dụng. Khi có bản mới, bấm **Tải lại** để áp dụng; dữ liệu đã lưu vẫn được giữ. Trang app ưu tiên tải HTML mới khi có mạng và dùng bản đã lưu khi ngoại tuyến.
+
+Cache được tách riêng theo từng game: cập nhật một app không xóa cache của các app còn lại. Khi phát hành thay đổi, tăng số phiên bản `CACHE` trong `sw.js` của từng app bị thay đổi. Nếu thay ảnh, dùng tên tệp mới và cập nhật các đường dẫn trong HTML, manifest và danh sách `SHELL`.
+
+### Bản 2026.09.28
+
+- Tắt sẵn các nguồn có điều kiện trong cấu hình mặc định mới; giải thích rõ giả định thưởng và lịch nhận.
+- Giữ nguyên cấu hình đã lưu, kể cả danh sách nguồn rỗng; không tự thêm lại vé cửa hàng đã xóa.
+- Sửa cache xóa chéo giữa game, giới hạn cache theo phạm vi app và không trả HTML thay cho ảnh bị thiếu.
+- Thêm nút kiểm tra cập nhật và dự báo có ghi rõ điều kiện nhận đủ nguồn thu.
+
+Chạy kiểm tra hồi quy bằng Node.js 20 trở lên: `node --test tests/reliability.test.cjs`.
+
+Bản sửa này áp dụng cho web/PWA; bộ cài Windows đã phát hành trước đó cần một bản phát hành riêng để đóng gói lại.
 
 ## Thêm game thứ 6
 

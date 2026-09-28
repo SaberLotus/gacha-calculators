@@ -1,41 +1,76 @@
-// Service worker — cache-first for the app shell so it runs offline.
-const CACHE = 'genshin-v7';
+// Each game owns its caches; other apps on this origin must remain available offline.
+const CACHE_PREFIX = 'genshin-';
+const CACHE = 'genshin-v8';
+const FONT_CACHE = CACHE + '-fonts';
+const SCOPE = new URL('./', self.location.href);
+const INDEX_URL = new URL('index.html', SCOPE).href;
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './character-icon-v2.jpg'];
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE)
+    .then(cache => cache.addAll(SHELL.map(path => new Request(new URL(path, SCOPE), { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+self.addEventListener('activate', (event) => {
+  event.waitUntil(caches.keys()
+    .then(keys => Promise.all(keys
+      .filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE && key !== FONT_CACHE)
+      .map(key => caches.delete(key))))
+    .then(() => self.clients.claim()));
 });
 
-self.addEventListener('fetch', (e) => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
-
-  // Google Fonts: serve from cache, refresh in the background.
-  if (/fonts\.(googleapis|gstatic)\.com/.test(req.url)) {
-    e.respondWith(caches.open(CACHE + '-fonts').then(async (c) => {
-      const hit = await c.match(req);
-      const net = fetch(req).then(r => { c.put(req, r.clone()); return r; }).catch(() => hit);
-      return hit || net;
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  const isFont = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
+  if (isFont){
+    const refresh = caches.open(FONT_CACHE).then(async cache => {
+      try {
+        const response = await fetch(request);
+        if (response.ok || response.type === 'opaque'){
+          await cache.put(request, response.clone()).catch(() => {});
+        }
+        return response;
+      } catch (e){
+        return (await cache.match(request)) || Response.error();
+      }
+    });
+    event.waitUntil(refresh.then(() => {}));
+    event.respondWith(caches.open(FONT_CACHE).then(async cache =>
+      (await cache.match(request)) || refresh));
+    return;
+  }
+  // Do not store another game's requests in this app's cache.
+  if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname)) return;
+  if (request.mode === 'navigate'){
+    event.respondWith(caches.open(CACHE).then(async cache => {
+      try {
+        const response = await fetch(new Request(request, { cache: 'no-cache' }));
+        if (response.ok && (url.pathname === SCOPE.pathname ||
+            url.pathname === new URL(INDEX_URL).pathname)){
+          await cache.put(INDEX_URL, response.clone()).catch(() => {});
+        }
+        return response;
+      } catch (e){
+        return (await cache.match(INDEX_URL)) || Response.error();
+      }
     }));
     return;
   }
-
-  // App shell: cache first, network as a fallback.
-  e.respondWith(
-    caches.match(req).then(hit => hit || fetch(req).then((r) => {
-      if (r.ok && new URL(req.url).origin === self.location.origin) {
-        const copy = r.clone();
-        caches.open(CACHE).then(c => c.put(req, copy));
+  event.respondWith(caches.open(CACHE).then(async cache => {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    try {
+      const response = await fetch(request);
+      if (response.status === 200){
+        await cache.put(request, response.clone()).catch(() => {});
       }
-      return r;
-    }).catch(() => caches.match('./index.html')))
-  );
+      return response;
+    } catch (e){
+      // Never return HTML for a missing image, stylesheet, or script.
+      return Response.error();
+    }
+  }));
 });
