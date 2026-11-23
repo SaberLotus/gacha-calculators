@@ -1,6 +1,6 @@
 // Each game owns its caches; other apps on this origin must remain available offline.
 const CACHE_PREFIX = 'genshin-';
-const CACHE = 'genshin-v8';
+const CACHE = 'genshin-v9';
 const FONT_CACHE = CACHE + '-fonts';
 const SCOPE = new URL('./', self.location.href);
 const INDEX_URL = new URL('index.html', SCOPE).href;

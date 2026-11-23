@@ -966,7 +966,7 @@
         </div>
         <div class="fs-row" id="app-update-row">
           <button class="io-src" id="app-check-update" type="button" disabled>Kiểm tra cập nhật</button>
-          <span class="fs-status" id="app-update-status" role="status">Bản ứng dụng 2026.09.28</span>
+          <span class="fs-status" id="app-update-status" role="status">Bản ứng dụng 2026.11.23</span>
         </div>
         <div class="fs-row" id="pwa-row" style="display:none;">
           <button class="io-src" id="pwa-install" type="button" style="display:none;">Cài app</button>
@@ -2100,7 +2100,7 @@
       navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
         updateButton.disabled = false;
         updateStatus.textContent = navigator.onLine
-          ? 'Bản ứng dụng 2026.09.28'
+          ? 'Bản ứng dụng 2026.11.23'
           : 'Đang ngoại tuyến — dùng bản đã lưu.';
         const watchInstall = () => {
           const worker = reg.installing;
@@ -2108,7 +2108,7 @@
           worker.addEventListener('statechange', () => {
             if (worker.state === 'activated'){
               if (document.getElementById('app-update-toast')) return;
-              updateStatus.textContent = 'Bản ứng dụng 2026.09.28 · Sẵn sàng ngoại tuyến';
+              updateStatus.textContent = 'Bản ứng dụng 2026.11.23 · Sẵn sàng ngoại tuyến';
             } else if (worker.state === 'redundant'){
               updateStatus.textContent = 'Chưa tải được bản mới. Bạn có thể thử lại.';
             }

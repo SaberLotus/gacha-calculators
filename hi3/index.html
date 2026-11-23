@@ -967,7 +967,7 @@
         </div>
         <div class="fs-row" id="app-update-row">
           <button class="io-src" id="app-check-update" type="button" disabled>Kiểm tra cập nhật</button>
-          <span class="fs-status" id="app-update-status" role="status">Bản ứng dụng 2026.09.28</span>
+          <span class="fs-status" id="app-update-status" role="status">Bản ứng dụng 2026.11.23</span>
         </div>
         <div class="fs-row" id="pwa-row" style="display:none;">
           <button class="io-src" id="pwa-install" type="button" style="display:none;">Cài app</button>
@@ -1157,9 +1157,9 @@
   let srcId = 0;
 
   const defaultSources = [
-    { name: 'Nhiệm vụ hàng ngày', amount: 0, period: 'daily' },
+    { name: 'Nhiệm vụ hàng ngày', amount: 60, period: 'daily' },
     { name: 'Điểm danh HoYoLAB', amount: 50, period: 'monthly', enabled: false },
-    { name: 'SK', amount: 0, period: 'weekly', enabled: false },
+    { name: 'SK (Sacred Key)', amount: 0, period: 'weekly', enabled: false },
     { name: 'BP (Nhiệm vụ Thông Hành)', amount: 3250, period: 'custom', customDays: 38, enabled: false },
     { name: 'Vực thẳm (Abyss)', amount: 1500, period: 'weekly', enabled: false },
     { name: 'Vùng đất xưa cũ', amount: 500, period: 'weekly', enabled: false },
@@ -1169,6 +1169,8 @@
     { name: 'Ủy Thác Mạo Hiểm', amount: 70, period: 'custom', customDays: 2, enabled: false },
     { name: 'Làm Công', amount: 40, period: 'custom', customDays: 2, enabled: false },
     { name: 'Bảo Trì', amount: 600, period: 'custom', customDays: 38, enabled: false },
+    { name: 'Sự kiện phiên bản hiện tại', amount: 0, period: 'version', enabled: false },
+    { name: 'Thưởng đăng nhập phiên bản', amount: 500, period: 'version', enabled: false },
   ];
 
   const srcList = document.getElementById('a-src-list');
@@ -2092,7 +2094,7 @@
       navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
         updateButton.disabled = false;
         updateStatus.textContent = navigator.onLine
-          ? 'Bản ứng dụng 2026.09.28'
+          ? 'Bản ứng dụng 2026.11.23'
           : 'Đang ngoại tuyến — dùng bản đã lưu.';
         const watchInstall = () => {
           const worker = reg.installing;
@@ -2100,7 +2102,7 @@
           worker.addEventListener('statechange', () => {
             if (worker.state === 'activated'){
               if (document.getElementById('app-update-toast')) return;
-              updateStatus.textContent = 'Bản ứng dụng 2026.09.28 · Sẵn sàng ngoại tuyến';
+              updateStatus.textContent = 'Bản ứng dụng 2026.11.23 · Sẵn sàng ngoại tuyến';
             } else if (worker.state === 'redundant'){
               updateStatus.textContent = 'Chưa tải được bản mới. Bạn có thể thử lại.';
             }

@@ -1,16 +1,17 @@
 # Gacha Calculators — cài trên Windows và điện thoại
 
-Bộ này gồm 6 app riêng biệt. Mỗi app cài độc lập và lưu dữ liệu riêng:
+Bộ này gồm 7 app riêng biệt. Mỗi app cài độc lập và lưu dữ liệu riêng:
 
 ```
 calculators/
-  index.html        ← trang tổng, liệt kê 5 app
+  index.html        ← trang tổng, liệt kê 7 app
   genshin/          ← Nguyên Thạch Calculator (Genshin Impact)
   hsr/              ← Tinh Ngọc Calculator (Honkai: Star Rail)
   hi3/              ← Pha Lê Calculator (Honkai Impact 3rd)
   zzz/              ← Polychrome Calculator (Zenless Zone Zero)
   wuwa/             ← Astrite Calculator (Wuthering Waves)
   nte/              ← Annulith Calculator (Neverness to Everness)
+  honma/            ← Anima Calculator (Honkai Nexus Anima)
 ```
 
 Quan trọng: app **phải chạy qua http/https**, không mở bằng cách bấm đúp vào file. Mở kiểu `file://` thì trình duyệt chặn cài đặt và chặn chạy offline.
@@ -27,6 +28,7 @@ Quan trọng: app **phải chạy qua http/https**, không mở bằng cách b�
 | Zenless Zone Zero | 160 Polychrome | 90 (S-Rank Agent) | Có |
 | Wuthering Waves | 160 Astrite | 80 (5★ Resonator) | Có |
 | Neverness to Everness | 160 Annulith = 1 Solid Dice | 90 (nhân vật nổi bật Fair Board) | Không |
+| Honkai Nexus Anima | 160 Anima | 90 | Có |
 
 Banner vũ khí có luật riêng: ZZZ 80 lượt với tỉ lệ 75/25, WuWa 80 lượt và không có 50/50, Genshin và HSR 80 lượt. Khi tính cho banner vũ khí, sửa ô "Lượt bảo hiểm tối đa" cho đúng.
 
@@ -117,7 +119,7 @@ Mỗi app có nút **Kiểm tra cập nhật** và hiển thị phiên bản ứ
 
 Cache được tách riêng theo từng game: cập nhật một app không xóa cache của các app còn lại. Khi phát hành thay đổi, tăng số phiên bản `CACHE` trong `sw.js` của từng app bị thay đổi. Nếu thay ảnh, dùng tên tệp mới và cập nhật các đường dẫn trong HTML, manifest và danh sách `SHELL`.
 
-### Bản 2026.09.28
+### Bản 2026.11.23
 
 - Tắt sẵn các nguồn có điều kiện trong cấu hình mặc định mới; giải thích rõ giả định thưởng và lịch nhận.
 - Giữ nguyên cấu hình đã lưu, kể cả danh sách nguồn rỗng; không tự thêm lại vé cửa hàng đã xóa.
@@ -128,9 +130,9 @@ Chạy kiểm tra hồi quy bằng Node.js 20 trở lên: `node --test tests/rel
 
 Bản sửa này áp dụng cho web/PWA; bộ cài Windows đã phát hành trước đó cần một bản phát hành riêng để đóng gói lại.
 
-## Thêm game thứ 6
+## Thêm game thứ 7
 
-Cả 5 app dùng chung một cấu trúc. Copy thư mục gần nhất về luật gacha rồi sửa trong `index.html`:
+Cả 7 app dùng chung một cấu trúc. Copy thư mục gần nhất về luật gacha rồi sửa trong `index.html`:
 
 1. `<title>`, `.eyebrow`, `<h1>` — tên game và tên app
 2. Tên tiền tệ (tìm và thay toàn bộ)

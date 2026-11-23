@@ -1,0 +1,26 @@
+{
+  "name": "Anima Calculator",
+  "short_name": "Anima",
+  "description": "Tính thời gian tích luỹ Anima và quy đổi ra lượt quay (Honkai Nexus Anima)",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "id": "./",
+  "background_color": "#070B15",
+  "theme_color": "#0D1526",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "character-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "character-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}

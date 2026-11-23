@@ -1,6 +1,6 @@
 // Each game owns its caches; other apps on this origin must remain available offline.
 const CACHE_PREFIX = 'hi3-';
-const CACHE = 'hi3-v6';
+const CACHE = 'hi3-v7';
 const FONT_CACHE = CACHE + '-fonts';
 const SCOPE = new URL('./', self.location.href);
 const INDEX_URL = new URL('index.html', SCOPE).href;

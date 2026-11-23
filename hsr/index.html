@@ -972,7 +972,7 @@
         </div>
         <div class="fs-row" id="app-update-row">
           <button class="io-src" id="app-check-update" type="button" disabled>Kiểm tra cập nhật</button>
-          <span class="fs-status" id="app-update-status" role="status">Bản ứng dụng 2026.09.28</span>
+          <span class="fs-status" id="app-update-status" role="status">Bản ứng dụng 2026.11.23</span>
         </div>
         <div class="fs-row" id="pwa-row" style="display:none;">
           <button class="io-src" id="pwa-install" type="button" style="display:none;">Cài app</button>
@@ -1177,9 +1177,10 @@
     { name: 'Hư Cấu Trừu Tượng (Pure Fiction)', amount: 800, period: 'custom', customDays: 14, enabled: false },
     { name: 'Ảo Cảnh Mạt Thế (Apocalyptic Shadow)', amount: 800, period: 'custom', customDays: 14, enabled: false },
     { name: 'Vé Đồng Hành / Vượt Ải lần đầu', amount: 1100, period: 'once', enabled: false },
-    { name: 'Nhiệm vụ Cốt truyện chính', amount: 560, period: 'once', enabled: false },
+    { name: 'Nhiệm vụ Cốt truyện chính (Amphoreus)', amount: 800, period: 'once', enabled: false },
     { name: 'Nhiệm vụ Đồng hành nhân vật', amount: 450, period: 'once', enabled: false },
-    { name: 'Khám phá bản đồ khu vực mới', amount: 1500, period: 'once', enabled: false },
+    { name: 'Khám phá bản đồ Amphoreus', amount: 2000, period: 'once', enabled: false },
+    { name: 'Khám phá bản đồ Penacony', amount: 1500, period: 'once', enabled: false },
     { name: 'Chuỗi sự kiện phiên bản (Phase 1 + 2)', amount: 1200, period: 'once', enabled: false },
     { name: 'Sự kiện web / mã quà tặng', amount: 0, period: 'custom', customDays: 10, enabled: false },
     { name: 'Thành tựu (Kỳ tích)', amount: 0, period: 'once', enabled: false },
@@ -2109,7 +2110,7 @@
       navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
         updateButton.disabled = false;
         updateStatus.textContent = navigator.onLine
-          ? 'Bản ứng dụng 2026.09.28'
+          ? 'Bản ứng dụng 2026.11.23'
           : 'Đang ngoại tuyến — dùng bản đã lưu.';
         const watchInstall = () => {
           const worker = reg.installing;
@@ -2117,7 +2118,7 @@
           worker.addEventListener('statechange', () => {
             if (worker.state === 'activated'){
               if (document.getElementById('app-update-toast')) return;
-              updateStatus.textContent = 'Bản ứng dụng 2026.09.28 · Sẵn sàng ngoại tuyến';
+              updateStatus.textContent = 'Bản ứng dụng 2026.11.23 · Sẵn sàng ngoại tuyến';
             } else if (worker.state === 'redundant'){
               updateStatus.textContent = 'Chưa tải được bản mới. Bạn có thể thử lại.';
             }
